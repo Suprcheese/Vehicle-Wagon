@@ -31,9 +31,14 @@ function getItemsIn(entity)
 	return items
 end
 
-function insertItems(entity, items)
+function insertItems(entity, items, flying_text)
+	local text_position = entity.position
 	for n, c in pairs(items) do
 		entity.insert{name = n, count = c}
+		if flying_text then
+			entity.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", n, c}})
+			text_position.y = text_position.y + 1
+		end
 	end
 end
 
@@ -207,8 +212,8 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	local player = game.players[event.player_index]
 	if event.entity.name == "loaded-vehicle-wagon-tank" or event.entity.name == "loaded-vehicle-wagon-car" then
 		player.insert{name = global.wagon_data[event.entity.unit_number].name, count=1}
-		player.surface.create_entity({name = "flying-text", position = player.position, text = {"items-inserted"}})
-		insertItems(player, global.wagon_data[event.entity.unit_number].items)
+		--player.surface.create_entity({name = "flying-text", position = player.position, text = {"items-inserted"}})
+		insertItems(player, global.wagon_data[event.entity.unit_number].items, true)
 	end
 end)
 
