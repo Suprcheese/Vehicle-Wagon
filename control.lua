@@ -219,3 +219,12 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 		global.vehicle_data[event.player_index] = nil
 	end
 end)
+
+-- Can't ride on an empty flatcar, but you can in a loaded one
+script.on_event(defines.events.on_player_driving_changed_state, function(event)
+	local player = game.players[event.player_index]
+	if player.vehicle and player.vehicle.name == "vehicle-wagon" then
+		player.driving = false
+		return
+	end
+end
