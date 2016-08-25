@@ -1,7 +1,7 @@
-Vehicle Wagon 1.0.0
+Vehicle Wagon 1.0.1
 ===================
 
-Version 1.0.0 was released August 24, 2016, was tested using Factorio v0.13.17, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.0.1 was released August 25, 2016, was tested using Factorio v0.13.17, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
 Just use the Winch to haul your vehicle onto the wagon, and use the same Winch to haul it back off when you're ready to drive off.
@@ -13,24 +13,25 @@ This mod should play well with other tank or car mods, and has been successfully
 -Advanced Tanks by Neomore
 -Tanks! by LCruel
 -SuperTank by binbinhrf
+-Trucks by KatzSmile
 
-Modded car/tank models will revert to a standard, grey-colored version while riding on the wagon, but after unloading it should be back to normal.
+Modded vehicle models will revert to a standard, grey-colored version while riding on the wagon, but after unloading it should be back to normal.
 
 Of course, you aren't allowed to load your aircraft onto wagons, as there'd be no point!
-Other vehicles that this mod can't automatically identify as a Car or Tank also cannot be loaded onto vehicle wagons.
+Other vehicles that this mod can't automatically identify also cannot be loaded onto vehicle wagons.
 
 You also cannot winch vehicles that have a passenger; all players must exit vehicles before loading/unloading.
 
 
-Known Issues:
--------------
+Known Issues/Quirks:
+--------------------
 
-When loading/unloading a Vehicle Wagon, the train it is attached to will always revert to Manual mode.
+When loading/unloading a Vehicle Wagon, the train it is attached to will revert to Manual mode.
 
-When a Vehicle Wagon is at the end of a train, everything seems to work just fine.
+If a Vehicle Wagon is at the end of a train, everything seems to work just fine.
 If a Vehicle Wagon is in the middle of a train, however, then when loading/unloading vehicles, the wagon tends to become disconnected from the train.
 There is currently no way to connect wagons via script, but fixing it by hand is simple: just hop into the wagon or locomotive and press the "Connect train" hotkey (G by default).
-I recommend getting into the habit of always pressing G when winching vehicles around.
+I recommend getting into the habit of always pressing G after winching vehicles around.
 
 Furthermore, if you have your Vehicle Wagon at the end of your train, and another train is very close behind, the wagon can sometimes get confused and reattach itself to the wrong train.
 Should this happen, both trains will be in Manual mode and won't run away on you, so you'll have plenty of time to manually fix the issue.

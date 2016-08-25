@@ -1,3 +1,10 @@
 Version 1.0.0 - August 24, 2016
 -------------------------------
 Initial release, featuring Vehicle Wagons that can carry your fully-laden combat vehicle so you can take it along with you on your rail journey!
+
+
+Version 1.0.1 - August 25, 2016
+-------------------------------
+Improved the flying text that appears if you pick up a loaded vehicle wagon.
+It is no longer possible to ride in empty vehicle wagons.
+Added support for the Trucks mod by KatzSmile.

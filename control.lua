@@ -36,8 +36,8 @@ function insertItems(entity, items, make_flying_text)
 	for n, c in pairs(items) do
 		entity.insert{name = n, count = c}
 		if make_flying_text then
-			text_position.y = text_position.y + 1
 			entity.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", c, game.item_prototypes[n].localised_name}})
+			text_position.y = text_position.y - 1
 		end
 	end
 end
@@ -210,8 +210,10 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
 	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" then
+		local text_position = player.position
+		text_position.y = text_position.y + 1
 		player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
-		player.surface.create_entity({name = "flying-text", position = player.position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
+		player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
 		insertItems(player, global.wagon_data[entity.unit_number].items, true)
 	end
 end)
