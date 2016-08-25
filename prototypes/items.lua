@@ -40,3 +40,18 @@ data:extend({
 		stack_size = 1
 	}
 })
+
+if data.raw["car"]["dumper-truck"] then
+	data:extend({
+		{
+			type = "item",
+			name = "loaded-vehicle-wagon-truck",
+			icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png",
+			flags = {"goes-to-quickbar", "hidden"},
+			subgroup = "transport",
+			order = "a[train-system]-z[vehicle-wagon]",
+			place_result = "loaded-vehicle-wagon-truck",
+			stack_size = 1
+		},
+	})
+end

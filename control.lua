@@ -31,13 +31,13 @@ function getItemsIn(entity)
 	return items
 end
 
-function insertItems(entity, items, flying_text)
+function insertItems(entity, items, make_flying_text)
 	local text_position = entity.position
 	for n, c in pairs(items) do
 		entity.insert{name = n, count = c}
-		if flying_text then
-			entity.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", n, c}})
+		if make_flying_text then
 			text_position.y = text_position.y + 1
+			entity.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", c, game.item_prototypes[n].localised_name}})
 		end
 	end
 end
@@ -99,30 +99,16 @@ function process_tick()
 	end
 end
 
-function loadWagon(wagon, vehicle, player_index)
+function loadWagon(wagon, vehicle, player_index, name)
 	local player = game.players[player_index]
-	local loaded_wagon = 0
-	if string.contains(vehicle.name, "tank") then
-		playSoundForPlayer("winch-sound", player)
-		global.wagon_data[player_index] = {}
-		global.wagon_data[player_index].status = "load"
-		global.wagon_data[player_index].wagon = wagon
-		global.wagon_data[player_index].vehicle = vehicle
-		global.wagon_data[player_index].name = "loaded-vehicle-wagon-tank"
-		global.wagon_data[player_index].tick = game.tick + 60
-		script.on_event(defines.events.on_tick, process_tick)
-	elseif string.contains(vehicle.name, "car") then
-		playSoundForPlayer("winch-sound", player)
-		global.wagon_data[player_index] = {}
-		global.wagon_data[player_index].status = "load"
-		global.wagon_data[player_index].wagon = wagon
-		global.wagon_data[player_index].vehicle = vehicle
-		global.wagon_data[player_index].name = "loaded-vehicle-wagon-car"
-		global.wagon_data[player_index].tick = game.tick + 60
-		script.on_event(defines.events.on_tick, process_tick)
-	else
-		return player.print({"unknown-vehicle-error"})
-	end
+	playSoundForPlayer("winch-sound", player)
+	global.wagon_data[player_index] = {}
+	global.wagon_data[player_index].status = "load"
+	global.wagon_data[player_index].wagon = wagon
+	global.wagon_data[player_index].vehicle = vehicle
+	global.wagon_data[player_index].name = "loaded-vehicle-wagon-" .. name
+	global.wagon_data[player_index].tick = game.tick + 60
+	script.on_event(defines.events.on_tick, process_tick)
 end
 
 function unloadWagon(loaded_wagon, player)
@@ -143,19 +129,28 @@ function handleWagon(wagon, player_index)
 		return player.print({"passenger-error"})
 	end
 	if global.vehicle_data[player_index] then
-		if not global.vehicle_data[player_index].valid then
+		local vehicle = global.vehicle_data[player_index]
+		if not vehicle.valid then
 			global.vehicle_data[player_index] = nil
 			return player.print({"generic-error"})
 		end
-		if global.vehicle_data[player_index].passenger then
+		if vehicle.passenger then
 			global.vehicle_data[player_index] = nil
 			return player.print({"passenger-error"})
 		end
-		if Position.distance(wagon.position, global.vehicle_data[player_index].position) > 9 then
+		if Position.distance(wagon.position, vehicle.position) > 9 then
 			global.vehicle_data[player_index] = nil
 			return player.print({"too-far-away"})
 		end
-		loadWagon(wagon, global.vehicle_data[player_index], player_index)
+		if string.contains(vehicle.name, "tank") then
+			loadWagon(wagon, vehicle, player_index, "tank")
+		elseif string.contains(vehicle.name, "car") then
+			loadWagon(wagon, vehicle, player_index, "car")
+		elseif vehicle.name == "dumper-truck" then
+			loadWagon(wagon, vehicle, player_index, "truck")
+		else
+			player.print({"unknown-vehicle-error"})
+		end
 		global.vehicle_data[player_index] = nil
 	else
 		player.print({"no-vehicle-selected"})
@@ -187,6 +182,9 @@ script.on_event(defines.events.on_built_entity, function(event)
 		if not loaded_wagon[1] then
 			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-car", position = entity.position, force = player.force}
 		end
+		if not loaded_wagon[1] then
+			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = entity.position, force = player.force}
+		end
 		vehicle = vehicle[1]
 		wagon = wagon[1]
 		loaded_wagon = loaded_wagon[1]
@@ -210,10 +208,11 @@ end)
 
 script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	local player = game.players[event.player_index]
-	if event.entity.name == "loaded-vehicle-wagon-tank" or event.entity.name == "loaded-vehicle-wagon-car" then
-		player.insert{name = global.wagon_data[event.entity.unit_number].name, count=1}
-		--player.surface.create_entity({name = "flying-text", position = player.position, text = {"items-inserted"}})
-		insertItems(player, global.wagon_data[event.entity.unit_number].items, true)
+	local entity = event.entity
+	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" then
+		player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
+		player.surface.create_entity({name = "flying-text", position = player.position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
+		insertItems(player, global.wagon_data[entity.unit_number].items, true)
 	end
 end)
 
@@ -232,4 +231,4 @@ script.on_event(defines.events.on_player_driving_changed_state, function(event)
 		player.driving = false
 		return
 	end
-end
+end)

@@ -175,6 +175,70 @@ loaded_vehicle_wagon_car.pictures =
 
 data:extend({vehicle_wagon, loaded_vehicle_wagon_tank, loaded_vehicle_wagon_car})
 
+if data.raw["car"]["dumper-truck"] then
+	local loaded_vehicle_wagon_truck = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
+
+	loaded_vehicle_wagon_truck.name = "loaded-vehicle-wagon-truck"
+	loaded_vehicle_wagon_truck.inventory_size = 0
+	loaded_vehicle_wagon_truck.minable = {mining_time = 1, result = "vehicle-wagon"}
+	loaded_vehicle_wagon_truck.horizontal_doors = nil
+	loaded_vehicle_wagon_truck.vertical_doors = nil
+	loaded_vehicle_wagon_truck.pictures =
+	{
+		layers =
+		{
+			{
+				priority = "very-low",
+				width = 256,
+				height = 256,
+				direction_count = 128,
+				filenames =
+				{
+					"__Vehicle Wagon__/graphics/cargo_fb_sheet.png",
+					"__Vehicle Wagon__/graphics/cargo_fb_sheet.png"
+				},
+				line_length = 8,
+				lines_per_file = 8,
+				shift={0.4, -1.20}
+			},
+			{
+				width = 192,
+				height = 192,
+				direction_count = 128,
+				shift = {0, -0.5},
+				scale = 0.95,
+				filenames =
+				{
+					"__Vehicle Wagon__/graphics/truck/truck-shadow-1.png",
+					"__Vehicle Wagon__/graphics/truck/truck-shadow-2.png",
+					"__Vehicle Wagon__/graphics/truck/truck-shadow-3.png",
+					"__Vehicle Wagon__/graphics/truck/truck-shadow-4.png"
+				},
+				line_length = 8,
+				lines_per_file = 5,
+			},
+			{
+				width = 192,
+				height = 192,
+				direction_count = 128,
+				shift = {0, -0.5},
+				scale = 0.95,
+				filenames =
+				{
+					"__Vehicle Wagon__/graphics/truck/truck-1.png",
+					"__Vehicle Wagon__/graphics/truck/truck-2.png",
+					"__Vehicle Wagon__/graphics/truck/truck-3.png",
+					"__Vehicle Wagon__/graphics/truck/truck-4.png"
+				},
+				line_length = 8,
+				lines_per_file = 5,
+			}
+		}
+	}
+
+	data:extend({loaded_vehicle_wagon_truck})
+end
+
 data:extend({
 	{
 		type = "simple-entity",
