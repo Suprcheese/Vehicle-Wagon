@@ -8,3 +8,9 @@ Version 1.0.1 - August 25, 2016
 Improved the flying text that appears if you pick up a loaded vehicle wagon.
 It is no longer possible to ride in empty vehicle wagons.
 Added support for the Trucks mod by KatzSmile.
+
+
+Version 1.0.2 - August 27, 2016
+-------------------------------
+Updated for Factorio 0.14.
+Vehicles' equipment grids are now properly handled.
