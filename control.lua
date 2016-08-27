@@ -28,11 +28,34 @@ function getItemsIn(entity)
 			items[name] = items[name] + count
 		end
 	end
+	if entity.grid then
+		local equipment = entity.grid.equipment
+		items.grid = {}
+		for i = 1, #equipment do
+			items.grid[i] = {}
+			items.grid[i].name = equipment[i].name
+			items.grid[i].position = equipment[i].position
+		end
+	end
 	return items
 end
 
-function insertItems(entity, items, make_flying_text)
+function insertItems(entity, items, make_flying_text, extract_grid)
 	local text_position = entity.position
+	if items.grid then
+		if extract_grid then
+			for i = 1, #items.grid do
+				entity.insert{name = items.grid[i].name, count = 1}
+				entity.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.item_prototypes[items.grid[i].name].localised_name}})
+				text_position.y = text_position.y - 1
+			end
+		else
+			for i = 1, #items.grid do
+				entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
+			end
+		end
+		items.grid = nil
+	end
 	for n, c in pairs(items) do
 		entity.insert{name = n, count = c}
 		if make_flying_text then
@@ -214,7 +237,7 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 		text_position.y = text_position.y + 1
 		player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
 		player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
-		insertItems(player, global.wagon_data[entity.unit_number].items, true)
+		insertItems(player, global.wagon_data[entity.unit_number].items, true, true)
 	end
 end)
 
