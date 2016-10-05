@@ -14,3 +14,9 @@ Version 1.0.2 - August 27, 2016
 -------------------------------
 Updated for Factorio 0.14.
 Vehicles' equipment grids are now properly handled.
+
+
+Version 1.0.3 - October 5, 2016
+-------------------------------
+Added German translation (courtesy of ST-DDT).
+Vehicles now remember their inventory filter settings after being transported by a Vehicle Wagon.
