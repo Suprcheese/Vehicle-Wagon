@@ -41,23 +41,27 @@ function getItemsIn(entity)
 end
 
 function getFilters(entity)
-	local filters = nil
-	for i = 1, 3 do
+	local filters = {}
+	for i = 2, 3 do
 		local inventory = entity.get_inventory(i)
-		if inventory.has_filters() then
-			filters = filters or {}
-			filters[i] = {}
-			for f = 1, #inventory do
-				local filter = inventory.get_filter(f)
+		local found = nil
+		filters[i] = {}
+		for f = 1, #inventory do
+			local filter = inventory.get_filter(f)
+			if filter then
+				found = true
 				filters[i][f] = filter
 			end
+		end
+		if not found then
+			filters[i] = nil
 		end
 	end
 	return filters
 end
 
 function setFilters(entity, filters)
-	for i = 1, 3 do
+	for i = 2, 3 do
 		local inventory = entity.get_inventory(i)
 		if filters[i] then
 			for f = 1, #inventory do
