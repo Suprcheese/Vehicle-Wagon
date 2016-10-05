@@ -40,6 +40,33 @@ function getItemsIn(entity)
 	return items
 end
 
+function getFilters(entity)
+	local filters = nil
+	for i = 1, 3 do
+		local inventory = entity.get_inventory(i)
+		if inventory.has_filters() then
+			filters = filters or {}
+			filters[i] = {}
+			for f = 1, #inventory do
+				local filter = inventory.get_filter(f)
+				filters[i][f] = filter
+			end
+		end
+	end
+	return filters
+end
+
+function setFilters(entity, filters)
+	for i = 1, 3 do
+		local inventory = entity.get_inventory(i)
+		if filters[i] then
+			for f = 1, #inventory do
+				inventory.set_filter(f, filters[i][f])
+			end
+		end
+	end
+end
+
 function insertItems(entity, items, make_flying_text, extract_grid)
 	local text_position = entity.position
 	if items.grid then
@@ -67,11 +94,12 @@ end
 
 function process_tick()
 	global.found = false
+	local current_tick = game.tick
 	for i, player in pairs(game.players) do
 		local player_index = player.index
 		if global.wagon_data[player_index] then
 			global.found = true
-			if global.wagon_data[player_index].status == "load" and global.wagon_data[player_index].tick == game.tick then
+			if global.wagon_data[player_index].status == "load" and global.wagon_data[player_index].tick == current_tick then
 				local wagon = global.wagon_data[player_index].wagon
 				local vehicle = global.wagon_data[player_index].vehicle
 				local position = wagon.position
@@ -89,9 +117,10 @@ function process_tick()
 				global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
 				global.wagon_data[loaded_wagon.unit_number].items = getItemsIn(vehicle)
+				global.wagon_data[loaded_wagon.unit_number].filters = getFilters(vehicle)
 				vehicle.destroy()
 				global.wagon_data[player_index] = nil
-			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == game.tick then
+			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
 				local loaded_wagon = global.wagon_data[player_index].wagon
 				if loaded_wagon.passenger then
 					global.wagon_data[player_index] = nil
@@ -109,6 +138,7 @@ function process_tick()
 				end
 				local vehicle = player.surface.create_entity({name = global.wagon_data[loaded_wagon.unit_number].name, position = unload_position, force = player.force})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
+				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items)
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
