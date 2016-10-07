@@ -61,11 +61,13 @@ function getFilters(entity)
 end
 
 function setFilters(entity, filters)
-	for i = 2, 3 do
-		local inventory = entity.get_inventory(i)
-		if filters[i] then
-			for f = 1, #inventory do
-				inventory.set_filter(f, filters[i][f])
+	if filters then
+		for i = 2, 3 do
+			local inventory = entity.get_inventory(i)
+			if filters[i] then
+				for f = 1, #inventory do
+					inventory.set_filter(f, filters[i][f])
+				end
 			end
 		end
 	end

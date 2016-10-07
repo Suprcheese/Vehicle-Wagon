@@ -20,3 +20,8 @@ Version 1.0.3 - October 5, 2016
 -------------------------------
 Added German translation (courtesy of ST-DDT).
 Vehicles now remember their inventory filter settings after being transported by a Vehicle Wagon.
+
+
+Version 1.0.4 - October 7, 2016
+-------------------------------
+Fixed a bug when unloading multiple Vehicle Wagons in quick succession.
