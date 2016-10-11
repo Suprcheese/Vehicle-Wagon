@@ -1,7 +1,7 @@
-Vehicle Wagon 1.0.4
+Vehicle Wagon 1.0.5
 ===================
 
-Version 1.0.4 was released October 7, 2016, was tested using Factorio v0.14.13, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.0.5 was released October 11, 2016, was tested using Factorio v0.14.13, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
 Just use the Winch to haul your vehicle onto the wagon, and use the same Winch to haul it back off when you're ready to drive off.
@@ -18,9 +18,9 @@ This mod should play well with other tank or car mods, and has been successfully
 Modded vehicle models will revert to a standard, grey-colored version while riding on the wagon, but after unloading it should be back to normal.
 
 Of course, you aren't allowed to load your aircraft onto wagons, as there'd be no point!
-Other vehicles that this mod can't automatically identify also cannot be loaded onto vehicle wagons.
+Other vehicles that this mod cannot automatically identify also cannot be loaded onto vehicle wagons.
 
-You also cannot winch vehicles that have a passenger; all players must exit vehicles before loading/unloading.
+You also cannot winch vehicles that have a passenger; all players must exit the relevant vehicles before loading/unloading.
 
 
 Known Issues/Quirks:
