@@ -268,12 +268,22 @@ end)
 script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
-	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" then
-		local text_position = player.position
-		text_position.y = text_position.y + 1
-		player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
-		player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
-		insertItems(player, global.wagon_data[entity.unit_number].items, true, true)
+	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" then
+		local unload_position = player.surface.find_non_colliding_position(global.wagon_data[entity.unit_number].name, entity.position, 5, 1)
+		if not unload_position then
+			player.print({"position-error"})
+			local text_position = player.position
+			text_position.y = text_position.y + 1
+			player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
+			player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
+			insertItems(player, global.wagon_data[entity.unit_number].items, true, true)
+			return
+		end
+		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
+		vehicle.health = global.wagon_data[entity.unit_number].health
+		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
+		insertItems(vehicle, global.wagon_data[entity.unit_number].items)
+		global.wagon_data[entity.unit_number] = nil
 	end
 end)
 
