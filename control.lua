@@ -73,7 +73,7 @@ function setFilters(entity, filters)
 	end
 end
 
-function insertItems(entity, items, make_flying_text, extract_grid)
+function insertItems(entity, items, player_index, make_flying_text, extract_grid)
 	local text_position = entity.position
 	if items.grid then
 		if extract_grid then
@@ -84,7 +84,8 @@ function insertItems(entity, items, make_flying_text, extract_grid)
 			end
 		else
 			for i = 1, #items.grid do
-				entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
+				local equipment = entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
+				game.raise_event(defines.events.on_player_placed_equipment, {player_index = player_index, equipment = equipment, grid = entity.grid})
 			end
 		end
 		items.grid = nil
@@ -107,6 +108,7 @@ function process_tick()
 			global.found = true
 			if global.wagon_data[player_index].status == "load" and global.wagon_data[player_index].tick == current_tick then
 				local wagon = global.wagon_data[player_index].wagon
+				local wagon_health = wagon.health
 				local vehicle = global.wagon_data[player_index].vehicle
 				local position = wagon.position
 				if wagon.passenger or vehicle.passenger then
@@ -119,6 +121,7 @@ function process_tick()
 				end
 				wagon.destroy()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
+				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
 				global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
@@ -128,6 +131,7 @@ function process_tick()
 				global.wagon_data[player_index] = nil
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
 				local loaded_wagon = global.wagon_data[player_index].wagon
+				local wagon_health = loaded_wagon.health
 				if loaded_wagon.passenger then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
@@ -146,10 +150,11 @@ function process_tick()
 				game.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
-				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items)
+				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
-				player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
+				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
+				wagon.health = wagon_health
 				global.wagon_data[player_index] = nil
 			end
 		end
@@ -277,14 +282,14 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 			text_position.y = text_position.y + 1
 			player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
 			player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
-			insertItems(player, global.wagon_data[entity.unit_number].items, true, true)
+			insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
 			return
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
 		game.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = event.player_index})
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
-		insertItems(vehicle, global.wagon_data[entity.unit_number].items)
+		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)
 		global.wagon_data[entity.unit_number] = nil
 	end
 end)
