@@ -31,3 +31,9 @@ Version 1.0.5 - October 11, 2016
 --------------------------------
 Mining (i.e. picking up) a loaded Vehicle Wagon now drops the vehicle as if it was winched off of the wagon.
 Before, the vehicle and its contents were inserted directly into the player's inventory, but this could result in lost items if there was insufficient inventory space available.
+
+
+Version 1.0.6 - October 31, 2016
+--------------------------------
+It is no longer possible to instantly and freely repair Vehicle Wagons simply by winching a vehicle on/off them.
+Raise base game events when winching to improve compatibility with mods such as Electric Vehicles.
