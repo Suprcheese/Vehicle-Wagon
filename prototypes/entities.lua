@@ -253,7 +253,7 @@ data:extend({
 		collision_box = {{0, 0}, {0, 0}},
 		selection_box = {{0, 0}, {0, 0}},
 		render_layer = "object",
-		max_health = 0,
+		max_health = 1,
 		picture =
 		{
 			filename = "__Vehicle Wagon__/graphics/winch-icon.png",

@@ -85,7 +85,7 @@ function insertItems(entity, items, player_index, make_flying_text, extract_grid
 		else
 			for i = 1, #items.grid do
 				local equipment = entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
-				game.raise_event(defines.events.on_player_placed_equipment, {player_index = player_index, equipment = equipment, grid = entity.grid})
+				script.raise_event(defines.events.on_player_placed_equipment, {player_index = player_index, equipment = equipment, grid = entity.grid})
 			end
 		end
 		items.grid = nil
@@ -111,6 +111,7 @@ function process_tick()
 				local wagon_health = wagon.health
 				local vehicle = global.wagon_data[player_index].vehicle
 				local position = wagon.position
+				player.clear_gui_arrow()
 				if wagon.passenger or vehicle.passenger then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
@@ -132,6 +133,7 @@ function process_tick()
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
 				local loaded_wagon = global.wagon_data[player_index].wagon
 				local wagon_health = loaded_wagon.health
+				player.clear_gui_arrow()
 				if loaded_wagon.passenger then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
@@ -147,7 +149,7 @@ function process_tick()
 					return player.print({"position-error"})
 				end
 				local vehicle = player.surface.create_entity({name = global.wagon_data[loaded_wagon.unit_number].name, position = unload_position, force = player.force})
-				game.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = player_index})
+				script.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
@@ -180,6 +182,7 @@ function unloadWagon(loaded_wagon, player)
 	if loaded_wagon.passenger then
 		return player.print({"passenger-error"})
 	end
+	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
 	playSoundForPlayer("winch-sound", player)
 	global.wagon_data[player.index] = {}
 	global.wagon_data[player.index].status = "unload"
@@ -197,14 +200,15 @@ function handleWagon(wagon, player_index)
 		local vehicle = global.vehicle_data[player_index]
 		if not vehicle.valid then
 			global.vehicle_data[player_index] = nil
+			player.clear_gui_arrow()
 			return player.print({"generic-error"})
 		end
 		if vehicle.passenger then
 			global.vehicle_data[player_index] = nil
+			player.clear_gui_arrow()
 			return player.print({"passenger-error"})
 		end
 		if Position.distance(wagon.position, vehicle.position) > 9 then
-			global.vehicle_data[player_index] = nil
 			return player.print({"too-far-away"})
 		end
 		if string.contains(vehicle.name, "tank") then
@@ -215,8 +219,9 @@ function handleWagon(wagon, player_index)
 			loadWagon(wagon, vehicle, player_index, "truck")
 		else
 			player.print({"unknown-vehicle-error"})
+			global.vehicle_data[player_index] = nil
+			player.clear_gui_arrow()
 		end
-		global.vehicle_data[player_index] = nil
 	else
 		player.print({"no-vehicle-selected"})
 	end
@@ -228,6 +233,7 @@ function handleVehicle(vehicle, player_index)
 		return player.print({"passenger-error"})
 	end
 	global.vehicle_data[player_index] = vehicle
+	player.set_gui_arrow({type = "entity", entity = vehicle})
 	player.print({"vehicle-selected"})
 end
 
@@ -286,7 +292,7 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 			return
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
-		game.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = event.player_index})
+		script.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = event.player_index})
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
 		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)
@@ -298,6 +304,9 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 	local player = game.players[event.player_index]
 	local stack = player.cursor_stack
 	if not stack or not stack.valid or not stack.valid_for_read or not (stack.name == "winch") then
+		if not global.found then
+			player.clear_gui_arrow()
+		end
 		global.vehicle_data[event.player_index] = nil
 	end
 end)
