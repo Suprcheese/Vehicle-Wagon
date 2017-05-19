@@ -37,3 +37,10 @@ Version 1.0.6 - October 31, 2016
 --------------------------------
 It is no longer possible to instantly and freely repair Vehicle Wagons simply by winching a vehicle on/off them.
 Raise base game events when winching to improve compatibility with mods such as Electric Vehicles.
+
+
+Version 1.1.0 - May 19, 2017
+----------------------------
+Updated for Factorio 0.15 (thanks Mooncat & The_Destroyer).
+Icon fixes for vehicle wagon entities.
+Added blinking arrows indicating which vehicle you have selected for winching.

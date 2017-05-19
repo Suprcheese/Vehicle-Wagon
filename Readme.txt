@@ -1,7 +1,8 @@
-Vehicle Wagon 1.0.6
+Vehicle Wagon 1.1.0
 ===================
 
-Version 1.0.6 was released October 31, 2016, was tested using Factorio v0.14.17, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.1.0 was released May 19, 2017, was tested using Factorio v0.15.12, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Additional contributions from: Mooncat & The_Destroyer.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
 Just use the Winch to haul your vehicle onto the wagon, and use the same Winch to haul it back off when you're ready to drive off.
@@ -28,6 +29,9 @@ Known Issues/Quirks:
 
 When loading/unloading a Vehicle Wagon, the train it is attached to will revert to Manual mode.
 
+*************************************************************************************************************
+In Factorio v0.15, it seems that the following issues are greatly ameliorated, but do still exercise caution:
+*************************************************************************************************************
 If a Vehicle Wagon is at the end of a train, everything seems to work just fine.
 If a Vehicle Wagon is in the middle of a train, however, then when loading/unloading vehicles, the wagon tends to become disconnected from the train.
 There is currently no way to connect wagons via script, but fixing it by hand is simple: just hop into the wagon or locomotive and press the "Connect train" hotkey (G by default).
