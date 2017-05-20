@@ -41,6 +41,6 @@ Raise base game events when winching to improve compatibility with mods such as 
 
 Version 1.1.0 - May 19, 2017
 ----------------------------
-Updated for Factorio 0.15 (thanks Mooncat & The_Destroyer).
+Updated for Factorio 0.15 (thanks Mooncat, The_Destroyer, & Phasma Felis).
 Icon fixes for vehicle wagon entities.
 Added blinking arrows indicating which vehicle you have selected for winching.
