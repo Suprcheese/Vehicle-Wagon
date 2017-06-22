@@ -243,7 +243,7 @@ script.on_event(defines.events.on_built_entity, function(event)
 	local current_tick = event.tick
 	if entity.name == "winch" then
 		if global.tick and global.tick > current_tick then
-			player.insert{name="winch", count=1}
+			player.cursor_stack.set_stack{name="winch", count=1}
 			return entity.destroy()
 		end
 		global.tick = current_tick + 10
@@ -261,18 +261,18 @@ script.on_event(defines.events.on_built_entity, function(event)
 		loaded_wagon = loaded_wagon[1]
 		if wagon and wagon.valid then
 			handleWagon(wagon, event.player_index)
-			player.insert{name="winch", count=1}
+			player.cursor_stack.set_stack{name="winch", count=1}
 			return entity.destroy()
 		end
 		if vehicle and vehicle.valid then
 			handleVehicle(vehicle, event.player_index)
-			player.insert{name="winch", count=1}
+			player.cursor_stack.set_stack{name="winch", count=1}
 			return entity.destroy()
 		end
 		if loaded_wagon and loaded_wagon.valid then
 			unloadWagon(loaded_wagon, player)
 		end
-		player.insert{name="winch", count=1}
+		player.cursor_stack.set_stack{name="winch", count=1}
 		entity.destroy()
 	end
 end)
