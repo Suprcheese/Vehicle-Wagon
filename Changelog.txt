@@ -44,3 +44,8 @@ Version 1.1.0 - May 19, 2017
 Updated for Factorio 0.15 (thanks Mooncat, The_Destroyer, & Phasma Felis).
 Icon fixes for vehicle wagon entities.
 Added blinking arrows indicating which vehicle you have selected for winching.
+
+
+Version 1.1.1 - June 25, 2017
+-----------------------------
+Fixed a bug where winches could disappear when both quickbar & inventory slots were completely filled.
