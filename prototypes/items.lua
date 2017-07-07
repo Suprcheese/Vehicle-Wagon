@@ -31,6 +31,16 @@ data:extend({
 	},
 	{
 		type = "item",
+		name = "loaded-vehicle-wagon-tarp",
+		icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png",
+		flags = {"goes-to-quickbar", "hidden"},
+		subgroup = "transport",
+		order = "a[train-system]-z[vehicle-wagon]",
+		place_result = "loaded-vehicle-wagon-tarp",
+		stack_size = 1
+	},
+	{
+		type = "item",
 		name = "winch",
 		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
 		flags = {"goes-to-quickbar"},
