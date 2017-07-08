@@ -191,6 +191,20 @@ function unloadWagon(loaded_wagon, player)
 	script.on_event(defines.events.on_tick, process_tick)
 end
 
+function isSpecialCase(name)
+	if name == "uplink-station" then
+		return "nope"
+	elseif name == "cargo-plane" then
+		return "tarp"
+	elseif name == "nixie-tube-sprite" then
+		return "nope"
+	elseif name == "nixie-tube-small-sprite" then
+		return "nope"
+	else
+		return false
+	end
+end
+
 function handleWagon(wagon, player_index)
 	local player = game.players[player_index]
 	if wagon.passenger then
@@ -211,14 +225,26 @@ function handleWagon(wagon, player_index)
 		if Position.distance(wagon.position, vehicle.position) > 9 then
 			return player.print({"too-far-away"})
 		end
-		if string.contains(vehicle.name, "tank") then
-			loadWagon(wagon, vehicle, player_index, "tank")
-		elseif string.contains(vehicle.name, "car") then
-			loadWagon(wagon, vehicle, player_index, "car")
-		elseif vehicle.name == "dumper-truck" then
-			loadWagon(wagon, vehicle, player_index, "truck")
-		else
-			loadWagon(wagon, vehicle, player_index, "tarp")
+		local special = isSpecialCase(vehicle.name)
+		if special then
+			if special == "nope" then
+				global.vehicle_data[player_index] = nil
+				player.clear_gui_arrow()
+				return player.print({"unknown-vehicle-error"})
+			else
+				return loadWagon(wagon, vehicle, player_index, special)
+			end
+		end
+		if not special then
+			if string.contains(vehicle.name, "tank") then
+				loadWagon(wagon, vehicle, player_index, "tank")
+			elseif string.contains(vehicle.name, "car") then
+				loadWagon(wagon, vehicle, player_index, "car")
+			elseif vehicle.name == "dumper-truck" then
+				loadWagon(wagon, vehicle, player_index, "truck")
+			else
+				loadWagon(wagon, vehicle, player_index, "tarp")
+			end
 		end
 	else
 		player.print({"no-vehicle-selected"})
