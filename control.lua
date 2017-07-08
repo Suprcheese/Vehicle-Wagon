@@ -218,9 +218,7 @@ function handleWagon(wagon, player_index)
 		elseif vehicle.name == "dumper-truck" then
 			loadWagon(wagon, vehicle, player_index, "truck")
 		else
-			player.print({"unknown-vehicle-error"})
-			global.vehicle_data[player_index] = nil
-			player.clear_gui_arrow()
+			loadWagon(wagon, vehicle, player_index, "tarp")
 		end
 	else
 		player.print({"no-vehicle-selected"})
@@ -256,9 +254,17 @@ script.on_event(defines.events.on_built_entity, function(event)
 		if not loaded_wagon[1] then
 			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = entity.position, force = player.force}
 		end
+		if not loaded_wagon[1] then
+			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tarp", position = entity.position, force = player.force}
+		end
 		vehicle = vehicle[1]
 		wagon = wagon[1]
 		loaded_wagon = loaded_wagon[1]
+		if loaded_wagon and loaded_wagon.valid then
+			unloadWagon(loaded_wagon, player)
+			player.cursor_stack.set_stack{name="winch", count=1}
+			return entity.destroy()
+		end
 		if wagon and wagon.valid then
 			handleWagon(wagon, event.player_index)
 			player.cursor_stack.set_stack{name="winch", count=1}
@@ -266,11 +272,6 @@ script.on_event(defines.events.on_built_entity, function(event)
 		end
 		if vehicle and vehicle.valid then
 			handleVehicle(vehicle, event.player_index)
-			player.cursor_stack.set_stack{name="winch", count=1}
-			return entity.destroy()
-		end
-		if loaded_wagon and loaded_wagon.valid then
-			unloadWagon(loaded_wagon, player)
 		end
 		player.cursor_stack.set_stack{name="winch", count=1}
 		entity.destroy()
@@ -280,7 +281,7 @@ end)
 script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
-	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" then
+	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" or entity.name == "loaded-vehicle-wagon-tarp" then
 		local unload_position = player.surface.find_non_colliding_position(global.wagon_data[entity.unit_number].name, entity.position, 5, 1)
 		if not unload_position then
 			player.print({"position-error"})

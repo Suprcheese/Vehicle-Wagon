@@ -18,8 +18,7 @@ This mod should play well with other tank or car mods, and has been successfully
 
 Modded vehicle models will revert to a standard, grey-colored version while riding on the wagon, but after unloading it should be back to normal.
 
-Of course, you aren't allowed to load your aircraft onto wagons, as there'd be no point!
-Other vehicles that this mod cannot automatically identify also cannot be loaded onto vehicle wagons.
+Vehicles that this mod cannot automatically identify including aircraft will be loaded using a tarped wagon.
 
 You also cannot winch vehicles that have a passenger; all players must exit the relevant vehicles before loading/unloading.
 
@@ -45,6 +44,8 @@ Credits:
 --------
 
 The flatbed wagon graphics are by the extremely talented and gracious YuokiTani!
+
+The wagon tarp graphics for supporting unidentified vehicles provided by Brant Wedel https://github.com/brantwedel
 
 This mod makes use of the Factorio Standard Library by Afforess (https://github.com/Afforess/Factorio-Stdlib).
 
