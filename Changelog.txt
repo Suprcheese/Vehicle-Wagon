@@ -50,6 +50,9 @@ Version 1.1.1 - June 25, 2017
 -----------------------------
 Fixed a bug where winches could disappear when both quickbar & inventory slots were completely filled.
 
-Version 1.1.2 - July 6, 2017
------------------------------
+
+Version 1.1.2 - July 8, 2017
+----------------------------
+Added special exceptions to prevent certain vehicles that contain the "car" string from being falsely interpreted as a car (e.g. "cargo-plane").
 Added tarped wagon to support loading any unidentified vehicles from mods.
+	-Huge thanks to Brant Wedel (https://github.com/brantwedel) for the tarp graphics & code!
