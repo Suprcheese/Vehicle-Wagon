@@ -56,3 +56,8 @@ Version 1.1.2 - July 8, 2017
 Added special exceptions to prevent certain vehicles that contain the "car" string from being falsely interpreted as a car (e.g. "cargo-plane").
 Added tarped wagon to support loading any unidentified vehicles from mods.
 	-Huge thanks to Brant Wedel (https://github.com/brantwedel) for the tarp graphics & code!
+
+
+Version 1.1.3 - September 24, 2017
+----------------------------------
+Vehicles with equipment grids now retain all stored energy in their equipment when loading/unloading from Vehicle Wagons.
