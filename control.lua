@@ -86,7 +86,7 @@ function insertItems(entity, items, player_index, make_flying_text, extract_grid
 		else
 			for i = 1, #items.grid do
 				local equipment = entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
-				equipment.energy = items.grid[i].energy
+				equipment.energy = items.grid[i].energy or 0
 				script.raise_event(defines.events.on_player_placed_equipment, {player_index = player_index, equipment = equipment, grid = entity.grid})
 			end
 		end
