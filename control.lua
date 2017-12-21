@@ -16,6 +16,19 @@ function On_Load()
 	end
 end
 
+-- Deal with the new 0.16 driver/passenger bit
+function get_driver_or_passenger(entity)
+    -- Check if we have a driver:
+    local driver = entity.get_driver()
+    if driver then return driver end
+
+    -- Otherwise check if we have a passenger, which will error if entity is not a car:
+    local status, resp = pcall(entity.get_passenger)
+    if not status then return nil end
+    return resp
+end
+
+
 function playSoundForPlayer(sound, player)
 	player.surface.create_entity({name = sound, position = player.position})
 end
@@ -114,7 +127,7 @@ function process_tick()
 				local vehicle = global.wagon_data[player_index].vehicle
 				local position = wagon.position
 				player.clear_gui_arrow()
-				if wagon.passenger or vehicle.passenger then
+				if wagon.get_driver() or get_driver_or_passenger(vehicle) then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
 				end
@@ -136,7 +149,7 @@ function process_tick()
 				local loaded_wagon = global.wagon_data[player_index].wagon
 				local wagon_health = loaded_wagon.health
 				player.clear_gui_arrow()
-				if loaded_wagon.passenger then
+				if loaded_wagon.get_driver() then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
 				end
@@ -181,7 +194,7 @@ function loadWagon(wagon, vehicle, player_index, name)
 end
 
 function unloadWagon(loaded_wagon, player)
-	if loaded_wagon.passenger then
+	if loaded_wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
 	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
@@ -209,7 +222,7 @@ end
 
 function handleWagon(wagon, player_index)
 	local player = game.players[player_index]
-	if wagon.passenger then
+	if wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
 	if global.vehicle_data[player_index] then
@@ -219,7 +232,7 @@ function handleWagon(wagon, player_index)
 			player.clear_gui_arrow()
 			return player.print({"generic-error"})
 		end
-		if vehicle.passenger then
+		if get_driver_or_passenger(vehicle) then
 			global.vehicle_data[player_index] = nil
 			player.clear_gui_arrow()
 			return player.print({"passenger-error"})
@@ -255,7 +268,7 @@ end
 
 function handleVehicle(vehicle, player_index)
 	local player = game.players[player_index]
-	if vehicle.passenger then
+	if get_driver_or_passenger(vehicle) then
 		return player.print({"passenger-error"})
 	end
 	global.vehicle_data[player_index] = vehicle
@@ -306,7 +319,7 @@ script.on_event(defines.events.on_built_entity, function(event)
 	end
 end)
 
-script.on_event(defines.events.on_preplayer_mined_item, function(event)
+script.on_event(defines.events.on_pre_player_mined_item, function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
 	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" or entity.name == "loaded-vehicle-wagon-tarp" then

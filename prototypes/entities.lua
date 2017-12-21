@@ -309,6 +309,7 @@ data:extend({
 		type = "simple-entity",
 		name = "winch",
 		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
+        icon_size = 32,
 		flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "not-on-map"},
 		collision_mask = {},
 		collision_box = {{0, 0}, {0, 0}},
