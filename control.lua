@@ -139,7 +139,19 @@ function process_tick()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
 				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
-				global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
+                
+                -- Make sure we need the 'expensive' gsub call before bothering:
+                if remote.interfaces["aai-programmable-vehicles"] then
+                    -- AAI vehicles end up with a composite; ex. for a vehicle-miner, the actual object that gets 
+                    -- loaded is a 'vehicle-miner-_-solid', which when unloaded doesn't work unless we record
+                    -- into the base object here.  
+                    -- NOTE: Unfortunately unloaded vehicles still end up with a new unit ID, as AAI doesn't expose
+                    -- an interface to set/restore the vehicles unit ID.
+                    global.wagon_data[loaded_wagon.unit_number].name = string.gsub(vehicle.name, "%-_%-.+","")
+                else
+                    global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
+                end
+
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
 				global.wagon_data[loaded_wagon.unit_number].items = getItemsIn(vehicle)
 				global.wagon_data[loaded_wagon.unit_number].filters = getFilters(vehicle)
