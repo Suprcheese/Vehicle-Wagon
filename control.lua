@@ -143,6 +143,16 @@ function process_tick()
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
 				global.wagon_data[loaded_wagon.unit_number].items = getItemsIn(vehicle)
 				global.wagon_data[loaded_wagon.unit_number].filters = getFilters(vehicle)
+
+                -- Deal with vehicles that use burners:
+                if vehicle.burner then
+                    global.wagon_data[loaded_wagon.unit_number].burner = {
+                        heat = vehicle.burner.heat,
+                        remaining_burning_fuel = vehicle.burner.remaining_burning_fuel,
+                        currently_burning = vehicle.burner.currently_burning
+                    }
+                end
+
 				vehicle.destroy()
 				global.wagon_data[player_index] = nil
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
@@ -168,6 +178,15 @@ function process_tick()
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
+
+                -- Restore burner
+                if vehicle.burner and global.wagon_data[loaded_wagon.unit_number].burner then
+                    -- Set the current fuel item first, or it clips remaining_burning_fuel
+                    vehicle.burner.currently_burning = global.wagon_data[loaded_wagon.unit_number].burner.currently_burning
+                    vehicle.burner.heat = global.wagon_data[loaded_wagon.unit_number].burner.heat
+                    vehicle.burner.remaining_burning_fuel = global.wagon_data[loaded_wagon.unit_number].burner.remaining_burning_fuel
+                end
+
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
