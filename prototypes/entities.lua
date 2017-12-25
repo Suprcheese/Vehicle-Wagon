@@ -85,7 +85,7 @@ loaded_vehicle_wagon_tank.pictures =
 			line_length = 2,
 			lines_per_file = 16,
 		},
-        {
+		{
 			width = 92,
 			height = 69,
 			direction_count = 128,
@@ -100,7 +100,7 @@ loaded_vehicle_wagon_tank.pictures =
 			},
 			line_length = 2,
 			lines_per_file = 16,
-        }
+		}
 	}
 }
 
@@ -160,7 +160,7 @@ loaded_vehicle_wagon_car.pictures =
 			line_length = 2,
 			lines_per_file = 22,
 		},
-        {
+		{
 			width = 36,
 			height = 29,
 			direction_count = 128,
@@ -172,7 +172,7 @@ loaded_vehicle_wagon_car.pictures =
 			},
 			line_length = 2,
 			lines_per_file = 64,
-        }
+		}
 	}
 }
 
@@ -309,7 +309,7 @@ data:extend({
 		type = "simple-entity",
 		name = "winch",
 		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
-        icon_size = 32,
+		icon_size = 32,
 		flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "not-on-map"},
 		collision_mask = {},
 		collision_box = {{0, 0}, {0, 0}},
