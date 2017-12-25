@@ -16,6 +16,19 @@ function On_Load()
 	end
 end
 
+-- Deal with the new 0.16 driver/passenger bit
+function get_driver_or_passenger(entity)
+	-- Check if we have a driver:
+	local driver = entity.get_driver()
+	if driver then return driver end
+
+	-- Otherwise check if we have a passenger, which will error if entity is not a car:
+	local status, resp = pcall(entity.get_passenger)
+	if not status then return nil end
+	return resp
+end
+
+
 function playSoundForPlayer(sound, player)
 	player.surface.create_entity({name = sound, position = player.position})
 end
@@ -114,7 +127,7 @@ function process_tick()
 				local vehicle = global.wagon_data[player_index].vehicle
 				local position = wagon.position
 				player.clear_gui_arrow()
-				if wagon.passenger or vehicle.passenger then
+				if wagon.get_driver() or get_driver_or_passenger(vehicle) then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
 				end
@@ -126,17 +139,39 @@ function process_tick()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
 				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
-				global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
+				
+				-- Make sure we need the 'expensive' gsub call before bothering:
+				if remote.interfaces["aai-programmable-vehicles"] then
+					-- AAI vehicles end up with a composite; ex. for a vehicle-miner, the actual object that gets 
+					-- loaded is a 'vehicle-miner-_-solid', which when unloaded doesn't work unless we record
+					-- into the base object here.  
+					-- NOTE: Unfortunately unloaded vehicles still end up with a new unit ID, as AAI doesn't expose
+					-- an interface to set/restore the vehicles unit ID.
+					global.wagon_data[loaded_wagon.unit_number].name = string.gsub(vehicle.name, "%-_%-.+","")
+				else
+					global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
+				end
+
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
 				global.wagon_data[loaded_wagon.unit_number].items = getItemsIn(vehicle)
 				global.wagon_data[loaded_wagon.unit_number].filters = getFilters(vehicle)
+
+				-- Deal with vehicles that use burners:
+				if vehicle.burner then
+					global.wagon_data[loaded_wagon.unit_number].burner = {
+						heat = vehicle.burner.heat,
+						remaining_burning_fuel = vehicle.burner.remaining_burning_fuel,
+						currently_burning = vehicle.burner.currently_burning
+					}
+				end
+
 				vehicle.destroy()
 				global.wagon_data[player_index] = nil
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
 				local loaded_wagon = global.wagon_data[player_index].wagon
 				local wagon_health = loaded_wagon.health
 				player.clear_gui_arrow()
-				if loaded_wagon.passenger then
+				if loaded_wagon.get_driver() then
 					global.wagon_data[player_index] = nil
 					return player.print({"passenger-error"})
 				end
@@ -155,6 +190,15 @@ function process_tick()
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
+
+				-- Restore burner
+				if vehicle.burner and global.wagon_data[loaded_wagon.unit_number].burner then
+					-- Set the current fuel item first, or it clips remaining_burning_fuel
+					vehicle.burner.currently_burning = global.wagon_data[loaded_wagon.unit_number].burner.currently_burning
+					vehicle.burner.heat = global.wagon_data[loaded_wagon.unit_number].burner.heat
+					vehicle.burner.remaining_burning_fuel = global.wagon_data[loaded_wagon.unit_number].burner.remaining_burning_fuel
+				end
+
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
@@ -181,7 +225,7 @@ function loadWagon(wagon, vehicle, player_index, name)
 end
 
 function unloadWagon(loaded_wagon, player)
-	if loaded_wagon.passenger then
+	if loaded_wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
 	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
@@ -209,7 +253,7 @@ end
 
 function handleWagon(wagon, player_index)
 	local player = game.players[player_index]
-	if wagon.passenger then
+	if wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
 	if global.vehicle_data[player_index] then
@@ -219,7 +263,7 @@ function handleWagon(wagon, player_index)
 			player.clear_gui_arrow()
 			return player.print({"generic-error"})
 		end
-		if vehicle.passenger then
+		if get_driver_or_passenger(vehicle) then
 			global.vehicle_data[player_index] = nil
 			player.clear_gui_arrow()
 			return player.print({"passenger-error"})
@@ -255,7 +299,7 @@ end
 
 function handleVehicle(vehicle, player_index)
 	local player = game.players[player_index]
-	if vehicle.passenger then
+	if get_driver_or_passenger(vehicle) then
 		return player.print({"passenger-error"})
 	end
 	global.vehicle_data[player_index] = vehicle
@@ -306,7 +350,7 @@ script.on_event(defines.events.on_built_entity, function(event)
 	end
 end)
 
-script.on_event(defines.events.on_preplayer_mined_item, function(event)
+script.on_event(defines.events.on_pre_player_mined_item, function(event)
 	local player = game.players[event.player_index]
 	local entity = event.entity
 	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" or entity.name == "loaded-vehicle-wagon-tarp" then
