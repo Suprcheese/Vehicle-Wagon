@@ -5,6 +5,18 @@
   "title": "Vehicle Wagon",
   "author": "Supercheese",
   "homepage": "https://forums.factorio.com/viewtopic.php?f=93&t=31489",
-  "dependencies": ["base >= 0.16.0", "? trucks"],
+  "dependencies": [
+    "base >= 0.16.0", 
+    "? trucks", 
+    "?aai-programmable-vehicles", 
+    "?aai-vehicles-chaingunner",
+    "?aai-vehicles-hauler",
+    "?aai-vehicles-flame-tank",
+    "?aai-vehicles-flame-tumbler",
+    "?aai-vehicles-hauler",
+    "?aai-vehicles-laser-tank",
+    "?aai-vehicles-miner",
+    "?aai-vehicles-warden"
+  ],
   "description": "Use a winch to haul your fully-laden combat vehicle onto a flatbed train car and take it along with you on your rail journey!"
 }
