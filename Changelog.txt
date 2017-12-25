@@ -1,71 +1,80 @@
-Version 1.0.0 - August 24, 2016
--------------------------------
-Initial release, featuring Vehicle Wagons that can carry your fully-laden combat vehicle so you can take it along with you on your rail journey!
-
-
-Version 1.0.1 - August 25, 2016
--------------------------------
-Improved the flying text that appears if you pick up a loaded vehicle wagon.
-It is no longer possible to ride in empty vehicle wagons.
-Added support for the Trucks mod by KatzSmile.
-
-
-Version 1.0.2 - August 27, 2016
--------------------------------
-Updated for Factorio 0.14.
-Vehicles' equipment grids are now properly handled.
-
-
-Version 1.0.3 - October 5, 2016
--------------------------------
-Added German translation (courtesy of ST-DDT).
-Vehicles now remember their inventory filter settings after being transported by a Vehicle Wagon.
-
-
-Version 1.0.4 - October 7, 2016
--------------------------------
-Fixed a bug when unloading multiple Vehicle Wagons in quick succession.
-
-
-Version 1.0.5 - October 11, 2016
---------------------------------
-Mining (i.e. picking up) a loaded Vehicle Wagon now drops the vehicle as if it was winched off of the wagon.
-Before, the vehicle and its contents were inserted directly into the player's inventory, but this could result in lost items if there was insufficient inventory space available.
-
-
-Version 1.0.6 - October 31, 2016
---------------------------------
-It is no longer possible to instantly and freely repair Vehicle Wagons simply by winching a vehicle on/off them.
-Raise base game events when winching to improve compatibility with mods such as Electric Vehicles.
-
-
-Version 1.1.0 - May 19, 2017
-----------------------------
-Updated for Factorio 0.15 (thanks Mooncat, The_Destroyer, & Phasma Felis).
-Icon fixes for vehicle wagon entities.
-Added blinking arrows indicating which vehicle you have selected for winching.
-
-
-Version 1.1.1 - June 25, 2017
------------------------------
-Fixed a bug where winches could disappear when both quickbar & inventory slots were completely filled.
-
-
-Version 1.1.2 - July 8, 2017
-----------------------------
-Added special exceptions to prevent certain vehicles that contain the "car" string from being falsely interpreted as a car (e.g. "cargo-plane").
-Added tarped wagon to support loading any unidentified vehicles from mods.
-	-Huge thanks to Brant Wedel (https://github.com/brantwedel) for the tarp graphics & code!
-
-
-Version 1.1.3 - September 24, 2017
-----------------------------------
-Vehicles with equipment grids now retain all stored energy in their equipment when loading/unloading from Vehicle Wagons.
-
-
-Version 1.2.0 - December 25, 2017
----------------------------------
-Updated for Factorio 0.16.
-Fixed a bug with vehicle equipment energy.
-Vehicle fuel amounts are now more accurately preserved when winching on/off Vehicle Wagons (legendblade)
-Improved compatibility with AAI Programmable Vehicles (legendblade)
+---------------------------------------------------------------------------------------------------
+Version: 1.2.0
+Date: 25. 12. 2017
+  Changes:
+    - Updated for Factorio 0.16.
+  Bugfixes:
+    - Fixed a bug with vehicle equipment energy.
+    - Vehicle fuel amounts are now more accurately preserved when winching on/off Vehicle Wagons. (legendblade)
+  Minor Features:
+    - Improved compatibility with AAI Programmable Vehicles. (legendblade)
+---------------------------------------------------------------------------------------------------
+Version: 1.1.3
+Date: 24. 9. 2017
+  Bugfixes:
+    - Vehicles with equipment grids now retain all stored energy in their equipment when loading/unloading from Vehicle Wagons.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.2
+Date: 8. 7. 2017
+  Bugfixes:
+    - Added special exceptions to prevent certain vehicles that contain the "car" string from being falsely interpreted as a car (e.g. "cargo-plane").
+  Major Features:
+    - Added tarped wagon to support loading any unidentified vehicles from mods.
+      Huge thanks to Brant Wedel (https://github.com/brantwedel) for the tarp graphics & code!
+---------------------------------------------------------------------------------------------------
+Version: 1.1.1
+Date: 25. 6. 2017
+  Bugfixes:
+    - Fixed a bug where winches could disappear when both quickbar & inventory slots were completely filled.
+---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 19. 5. 2017
+  Changes:
+    - Updated for Factorio 0.15.
+  Bugfixes:
+    - Icon fixes for vehicle wagon entities.
+  Minor Features:
+    - Added blinking arrows indicating which vehicle you have selected for winching.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 31. 10. 2016
+  Changes:
+    - Raise base game events when winching to improve compatibility with mods such as Electric Vehicles.
+  Bugfixes:
+    - It is no longer possible to instantly and freely repair Vehicle Wagons simply by winching a vehicle on/off them.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 11. 10. 2016
+  Changes:
+    - Mining (i.e. picking up) a loaded Vehicle Wagon now drops the vehicle as if it was winched off of the wagon.
+      Before, the vehicle and its contents were inserted directly into the player's inventory, but this could result in lost items if there was insufficient inventory space available.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 7. 10. 2016
+  Bugfixes:
+    - Fixed a bug when unloading multiple Vehicle Wagons in quick succession.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 5. 10. 2016
+  Bugfixes:
+    - Vehicles now remember their inventory filter settings after being transported by a Vehicle Wagon.
+  Minor Features:
+    - Added German translation (courtesy of ST-DDT).
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 27. 8. 2016
+  Changes:
+    - Updated for Factorio 0.14.
+    - Vehicles' equipment grids are now properly handled.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 25. 8. 2016
+  Changes:
+    - Improved the flying text that appears if you pick up a loaded vehicle wagon.
+    - It is no longer possible to ride in empty vehicle wagons.
+    - Added support for the Trucks mod by KatzSmile.
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0 - First public release
+Date: 24. 8. 2016
+  Major Features:
+    - Initial release, featuring Vehicle Wagons that can carry your fully-laden combat vehicle so you can take it along with you on your rail journey!

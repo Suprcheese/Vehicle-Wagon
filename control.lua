@@ -139,23 +139,20 @@ function process_tick()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
 				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
-				
 				-- Make sure we need the 'expensive' gsub call before bothering:
 				if remote.interfaces["aai-programmable-vehicles"] then
-					-- AAI vehicles end up with a composite; ex. for a vehicle-miner, the actual object that gets 
+					-- AAI vehicles end up with a composite; ex. for a vehicle-miner, the actual object that gets
 					-- loaded is a 'vehicle-miner-_-solid', which when unloaded doesn't work unless we record
-					-- into the base object here.  
+					-- into the base object here.
 					-- NOTE: Unfortunately unloaded vehicles still end up with a new unit ID, as AAI doesn't expose
 					-- an interface to set/restore the vehicles unit ID.
 					global.wagon_data[loaded_wagon.unit_number].name = string.gsub(vehicle.name, "%-_%-.+","")
 				else
 					global.wagon_data[loaded_wagon.unit_number].name = vehicle.name
 				end
-
 				global.wagon_data[loaded_wagon.unit_number].health = vehicle.health
 				global.wagon_data[loaded_wagon.unit_number].items = getItemsIn(vehicle)
 				global.wagon_data[loaded_wagon.unit_number].filters = getFilters(vehicle)
-
 				-- Deal with vehicles that use burners:
 				if vehicle.burner then
 					global.wagon_data[loaded_wagon.unit_number].burner = {
@@ -164,7 +161,6 @@ function process_tick()
 						currently_burning = vehicle.burner.currently_burning
 					}
 				end
-
 				vehicle.destroy()
 				global.wagon_data[player_index] = nil
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
@@ -369,6 +365,13 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
 		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)
+		-- Restore burner
+		if vehicle.burner and global.wagon_data[entity.unit_number].burner then
+			-- Set the current fuel item first, or it clips remaining_burning_fuel
+			vehicle.burner.currently_burning = global.wagon_data[entity.unit_number].burner.currently_burning
+			vehicle.burner.heat = global.wagon_data[entity.unit_number].burner.heat
+			vehicle.burner.remaining_burning_fuel = global.wagon_data[entity.unit_number].burner.remaining_burning_fuel
+		end
 		global.wagon_data[entity.unit_number] = nil
 	end
 end)
