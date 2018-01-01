@@ -135,6 +135,10 @@ function process_tick()
 					global.wagon_data[player_index] = nil
 					return player.print({"generic-error"})
 				end
+				if wagon.train.speed > 0 then
+					global.wagon_data[player_index] = nil
+					return player.print({"train-in-motion-error"})
+				end
 				local trainInManual = wagon.train.valid and wagon.train.manual_mode or false
 				wagon.destroy()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
@@ -176,6 +180,10 @@ function process_tick()
 				if not loaded_wagon.valid then
 					global.wagon_data[player_index] = nil
 					return player.print({"generic-error"})
+				end
+				if loaded_wagon.train.speed > 0 then
+					global.wagon_data[player_index] = nil
+					return player.print({"train-in-motion-error"})
 				end
 				local wagon_position = loaded_wagon.position
 				local trainInManual = loaded_wagon.train.valid and loaded_wagon.train.manual_mode or false
@@ -228,6 +236,9 @@ function unloadWagon(loaded_wagon, player)
 	if loaded_wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
+	if loaded_wagon.train.speed > 0 then
+		return player.print({"train-in-motion-error"})
+	end
 	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
 	playSoundForPlayer("winch-sound", player)
 	global.wagon_data[player.index] = {}
@@ -255,6 +266,9 @@ function handleWagon(wagon, player_index)
 	local player = game.players[player_index]
 	if wagon.get_driver() then
 		return player.print({"passenger-error"})
+	end
+	if wagon.train.speed > 0 then
+		return player.print({"train-in-motion-error"})
 	end
 	if global.vehicle_data[player_index] then
 		local vehicle = global.vehicle_data[player_index]
