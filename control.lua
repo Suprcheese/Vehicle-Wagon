@@ -181,7 +181,7 @@ function process_tick()
 					global.wagon_data[player_index] = nil
 					return player.print({"generic-error"})
 				end
-				if loaded_wagon.train.speed > 0 then
+				if loaded_wagon.train.speed ~= 0 then
 					global.wagon_data[player_index] = nil
 					return player.print({"train-in-motion-error"})
 				end
