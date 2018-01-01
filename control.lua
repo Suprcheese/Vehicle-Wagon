@@ -135,7 +135,7 @@ function process_tick()
 					global.wagon_data[player_index] = nil
 					return player.print({"generic-error"})
 				end
-				if wagon.train.speed > 0 then
+				if wagon.train.speed ~= 0 then
 					global.wagon_data[player_index] = nil
 					return player.print({"train-in-motion-error"})
 				end
@@ -236,7 +236,7 @@ function unloadWagon(loaded_wagon, player)
 	if loaded_wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
-	if loaded_wagon.train.speed > 0 then
+	if loaded_wagon.train.speed ~= 0 then
 		return player.print({"train-in-motion-error"})
 	end
 	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
@@ -267,7 +267,7 @@ function handleWagon(wagon, player_index)
 	if wagon.get_driver() then
 		return player.print({"passenger-error"})
 	end
-	if wagon.train.speed > 0 then
+	if wagon.train.speed ~= 0 then
 		return player.print({"train-in-motion-error"})
 	end
 	if global.vehicle_data[player_index] then
