@@ -135,6 +135,7 @@ function process_tick()
 					global.wagon_data[player_index] = nil
 					return player.print({"generic-error"})
 				end
+				local trainInManual = wagon.train.valid and wagon.train.manual_mode or false
 				wagon.destroy()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
 				loaded_wagon.health = wagon_health
@@ -163,6 +164,7 @@ function process_tick()
 				end
 				vehicle.destroy()
 				global.wagon_data[player_index] = nil
+				loaded_wagon.train.manual_mode = trainInManual
 			elseif global.wagon_data[player_index].status == "unload" and global.wagon_data[player_index].tick == current_tick then
 				local loaded_wagon = global.wagon_data[player_index].wagon
 				local wagon_health = loaded_wagon.health
@@ -176,6 +178,7 @@ function process_tick()
 					return player.print({"generic-error"})
 				end
 				local wagon_position = loaded_wagon.position
+				local trainInManual = loaded_wagon.train.valid and loaded_wagon.train.manual_mode or false
 				local unload_position = player.surface.find_non_colliding_position(global.wagon_data[loaded_wagon.unit_number].name, wagon_position, 5, 1)
 				if not unload_position then
 					global.wagon_data[player_index] = nil
@@ -199,6 +202,7 @@ function process_tick()
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
 				wagon.health = wagon_health
+				wagon.train.manual_mode = trainInManual
 				global.wagon_data[player_index] = nil
 			end
 		end
