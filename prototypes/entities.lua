@@ -1,7 +1,8 @@
 local vehicle_wagon = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 
 vehicle_wagon.name = "vehicle-wagon"
-vehicle_wagon.icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png"
+vehicle_wagon.icon = "__Vehicle Wagon__/graphics/tech-icon.png"
+vehicle_wagon.icon_size = 128
 vehicle_wagon.inventory_size = 0
 vehicle_wagon.minable = {mining_time = 1, result = "vehicle-wagon"}
 vehicle_wagon.horizontal_doors = nil
@@ -30,7 +31,8 @@ vehicle_wagon.pictures =
 local loaded_vehicle_wagon_tank = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 
 loaded_vehicle_wagon_tank.name = "loaded-vehicle-wagon-tank"
-loaded_vehicle_wagon_tank.icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png"
+loaded_vehicle_wagon_tank.icon = "__Vehicle Wagon__/graphics/tech-icon.png"
+loaded_vehicle_wagon_tank.icon_size = 128
 loaded_vehicle_wagon_tank.inventory_size = 0
 loaded_vehicle_wagon_tank.minable = {mining_time = 1, result = "vehicle-wagon"}
 loaded_vehicle_wagon_tank.horizontal_doors = nil
@@ -107,7 +109,8 @@ loaded_vehicle_wagon_tank.pictures =
 local loaded_vehicle_wagon_car = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 
 loaded_vehicle_wagon_car.name = "loaded-vehicle-wagon-car"
-loaded_vehicle_wagon_car.icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png"
+loaded_vehicle_wagon_car.icon = "__Vehicle Wagon__/graphics/tech-icon.png"
+loaded_vehicle_wagon_car.icon_size = 128
 loaded_vehicle_wagon_car.inventory_size = 0
 loaded_vehicle_wagon_car.minable = {mining_time = 1, result = "vehicle-wagon"}
 loaded_vehicle_wagon_car.horizontal_doors = nil
@@ -179,7 +182,8 @@ loaded_vehicle_wagon_car.pictures =
 local loaded_vehicle_wagon_tarp = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 
 loaded_vehicle_wagon_tarp.name = "loaded-vehicle-wagon-tarp"
-loaded_vehicle_wagon_tarp.icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png"
+loaded_vehicle_wagon_tarp.icon = "__Vehicle Wagon__/graphics/tech-icon.png"
+loaded_vehicle_wagon_tarp.icon_size = 128
 loaded_vehicle_wagon_tarp.inventory_size = 0
 loaded_vehicle_wagon_tarp.minable = {mining_time = 1, result = "vehicle-wagon"}
 loaded_vehicle_wagon_tarp.horizontal_doors = nil
@@ -243,7 +247,8 @@ if data.raw["car"]["dumper-truck"] then
 	local loaded_vehicle_wagon_truck = util.table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 
 	loaded_vehicle_wagon_truck.name = "loaded-vehicle-wagon-truck"
-	loaded_vehicle_wagon_truck.icon = "__Vehicle Wagon__/graphics/vehicle-wagon-icon.png"
+	loaded_vehicle_wagon_truck.icon = "__Vehicle Wagon__/graphics/tech-icon.png"
+	loaded_vehicle_wagon_truck.icon_size = 128
 	loaded_vehicle_wagon_truck.inventory_size = 0
 	loaded_vehicle_wagon_truck.minable = {mining_time = 1, result = "vehicle-wagon"}
 	loaded_vehicle_wagon_truck.horizontal_doors = nil
@@ -309,7 +314,7 @@ data:extend({
 		type = "simple-entity",
 		name = "winch",
 		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
-		icon_size = 32,
+		icon_size = 64,
 		flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "not-on-map"},
 		collision_mask = {},
 		collision_box = {{0, 0}, {0, 0}},
@@ -319,9 +324,10 @@ data:extend({
 		picture =
 		{
 			filename = "__Vehicle Wagon__/graphics/winch-icon.png",
-			width = 32,
-			height = 32,
-			shift = {0, 0}
+			width = 64,
+			height = 64,
+			shift = {0, 0},
+			scale = 0.5
 		}
 	}
 })
