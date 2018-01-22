@@ -406,6 +406,5 @@ script.on_event(defines.events.on_player_driving_changed_state, function(event)
 	local player = game.players[event.player_index]
 	if player.vehicle and player.vehicle.name == "vehicle-wagon" then
 		player.driving = false
-		return
 	end
 end)
