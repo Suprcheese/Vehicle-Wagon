@@ -28,11 +28,6 @@ function get_driver_or_passenger(entity)
 	return resp
 end
 
-
-function playSoundForPlayer(sound, player)
-	player.surface.create_entity({name = sound, position = player.position})
-end
-
 function getItemsIn(entity)
 	local items = {}
 	for i = 1, 3 do
@@ -222,7 +217,7 @@ end
 
 function loadWagon(wagon, vehicle, player_index, name)
 	local player = game.players[player_index]
-	playSoundForPlayer("winch-sound", player)
+	player.play_sound({path = "winch-sound"})
 	global.wagon_data[player_index] = {}
 	global.wagon_data[player_index].status = "load"
 	global.wagon_data[player_index].wagon = wagon
@@ -240,7 +235,7 @@ function unloadWagon(loaded_wagon, player)
 		return player.print({"train-in-motion-error"})
 	end
 	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
-	playSoundForPlayer("winch-sound", player)
+	player.play_sound({path = "winch-sound"})
 	global.wagon_data[player.index] = {}
 	global.wagon_data[player.index].status = "unload"
 	global.wagon_data[player.index].wagon = loaded_wagon
@@ -322,26 +317,27 @@ function handleVehicle(vehicle, player_index)
 end
 
 script.on_event(defines.events.on_built_entity, function(event)
-	local player = game.players[event.player_index]
 	local entity = event.created_entity
-	local current_tick = event.tick
 	if entity.name == "winch" then
+		local current_tick = event.tick
+		local player = game.players[event.player_index]
+		local position = entity.position
 		if global.tick and global.tick > current_tick then
 			player.cursor_stack.set_stack{name="winch", count=1}
 			return entity.destroy()
 		end
 		global.tick = current_tick + 10
-		local vehicle = entity.surface.find_entities_filtered{type = "car", position = entity.position, force = player.force}
-		local wagon = entity.surface.find_entities_filtered{name = "vehicle-wagon", position = entity.position, force = player.force}
-		local loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tank", position = entity.position, force = player.force}
+		local vehicle = entity.surface.find_entities_filtered{type = "car", position = position, force = player.force}
+		local wagon = entity.surface.find_entities_filtered{name = "vehicle-wagon", position = position, force = player.force}
+		local loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tank", position = position, force = player.force}
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-car", position = entity.position, force = player.force}
+			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-car", position = position, force = player.force}
 		end
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = entity.position, force = player.force}
+			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = position, force = player.force}
 		end
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tarp", position = entity.position, force = player.force}
+			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tarp", position = position, force = player.force}
 		end
 		vehicle = vehicle[1]
 		wagon = wagon[1]
@@ -365,9 +361,9 @@ script.on_event(defines.events.on_built_entity, function(event)
 end)
 
 script.on_event(defines.events.on_pre_player_mined_item, function(event)
-	local player = game.players[event.player_index]
 	local entity = event.entity
 	if entity.name == "loaded-vehicle-wagon-tank" or entity.name == "loaded-vehicle-wagon-car" or entity.name == "loaded-vehicle-wagon-truck" or entity.name == "loaded-vehicle-wagon-tarp" then
+		local player = game.players[event.player_index]
 		local unload_position = player.surface.find_non_colliding_position(global.wagon_data[entity.unit_number].name, entity.position, 5, 1)
 		if not unload_position then
 			player.print({"position-error"})
