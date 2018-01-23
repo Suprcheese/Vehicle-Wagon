@@ -44,15 +44,51 @@ data:extend({
 		stack_size = 1
 	},
 	{
-		type = "item",
+		type = "capsule",
 		name = "winch",
 		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
 		icon_size = 64,
 		flags = {"goes-to-quickbar"},
 		subgroup = "transport",
 		order = "a[train-system]-w[winch]",
-		place_result = "winch",
-		stack_size = 1
+		stack_size = 1,
+		capsule_action =
+		{
+			type = "throw",
+			attack_parameters =
+			{
+				type = "projectile",
+				ammo_category = "melee",
+				cooldown = 15,
+				range = 9,
+				ammo_type =
+				{
+					category = "melee",
+					target_type = "entity",
+					action =
+					{
+						type = "direct",
+						action_delivery =
+						{
+							type = "instant",
+							target_effects =
+							{
+								{
+									type = "play-sound",
+									sound =
+									{
+										{
+											filename = "__Vehicle Wagon__/sound/latchOn.ogg",
+											volume = 0
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 })
 

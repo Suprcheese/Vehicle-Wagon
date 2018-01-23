@@ -193,7 +193,6 @@ function process_tick()
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
-
 				-- Restore burner
 				if vehicle.burner and global.wagon_data[loaded_wagon.unit_number].burner then
 					-- Set the current fuel item first, or it clips remaining_burning_fuel
@@ -201,13 +200,13 @@ function process_tick()
 					vehicle.burner.heat = global.wagon_data[loaded_wagon.unit_number].burner.heat
 					vehicle.burner.remaining_burning_fuel = global.wagon_data[loaded_wagon.unit_number].burner.remaining_burning_fuel
 				end
-
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
 				wagon.health = wagon_health
 				wagon.train.manual_mode = trainInManual
 				global.wagon_data[player_index] = nil
+				player.play_sound({path = "latch-off", volume_modifier = 0.7})
 			end
 		end
 	end
@@ -315,53 +314,48 @@ function handleVehicle(vehicle, player_index)
 	end
 	global.vehicle_data[player_index] = vehicle
 	player.set_gui_arrow({type = "entity", entity = vehicle})
+	player.play_sound({path = "latch-on"})
 	if global.tutorials[player_index] < 5 then
 		global.tutorials[player_index] = global.tutorials[player_index] + 1
 		player.print({"vehicle-selected"})
 	end
 end
 
-script.on_event(defines.events.on_built_entity, function(event)
-	local entity = event.created_entity
-	if entity.name == "winch" then
-		local current_tick = event.tick
+script.on_event(defines.events.on_player_used_capsule, function(event)
+	local capsule = event.item
+	if capsule.name == "winch" then
 		local player = game.players[event.player_index]
-		local position = entity.position
-		if global.tick and global.tick > current_tick then
-			player.cursor_stack.set_stack{name="winch", count=1}
-			return entity.destroy()
-		end
-		global.tick = current_tick + 10
-		local vehicle = entity.surface.find_entities_filtered{type = "car", position = position, force = player.force}
-		local wagon = entity.surface.find_entities_filtered{name = "vehicle-wagon", position = position, force = player.force}
-		local loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tank", position = position, force = player.force}
+		local surface = player.surface
+		local position = event.position
+		local vehicle = surface.find_entities_filtered{type = "car", position = position, force = player.force}
+		local wagon = surface.find_entities_filtered{name = "vehicle-wagon", position = position, force = player.force}
+		local loaded_wagon = surface.find_entities_filtered{name = "loaded-vehicle-wagon-tank", position = position, force = player.force}
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-car", position = position, force = player.force}
+			loaded_wagon = surface.find_entities_filtered{name = "loaded-vehicle-wagon-car", position = position, force = player.force}
 		end
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = position, force = player.force}
+			loaded_wagon = surface.find_entities_filtered{name = "loaded-vehicle-wagon-truck", position = position, force = player.force}
 		end
 		if not loaded_wagon[1] then
-			loaded_wagon = entity.surface.find_entities_filtered{name = "loaded-vehicle-wagon-tarp", position = position, force = player.force}
+			loaded_wagon = surface.find_entities_filtered{name = "loaded-vehicle-wagon-tarp", position = position, force = player.force}
 		end
 		vehicle = vehicle[1]
 		wagon = wagon[1]
 		loaded_wagon = loaded_wagon[1]
 		if loaded_wagon and loaded_wagon.valid then
 			unloadWagon(loaded_wagon, player)
-			player.cursor_stack.set_stack{name="winch", count=1}
-			return entity.destroy()
+			player.cursor_stack.set_stack{name = "winch", count = 2}
+			return
 		end
 		if wagon and wagon.valid then
 			handleWagon(wagon, event.player_index)
-			player.cursor_stack.set_stack{name="winch", count=1}
-			return entity.destroy()
+			player.cursor_stack.set_stack{name = "winch", count = 2}
+			return
 		end
 		if vehicle and vehicle.valid then
 			handleVehicle(vehicle, event.player_index)
 		end
-		player.cursor_stack.set_stack{name="winch", count=1}
-		entity.destroy()
+		player.cursor_stack.set_stack{name = "winch", count = 2}
 	end
 end)
 
@@ -374,7 +368,7 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			player.print({"position-error"})
 			local text_position = player.position
 			text_position.y = text_position.y + 1
-			player.insert{name = global.wagon_data[entity.unit_number].name, count=1}
+			player.insert{name = global.wagon_data[entity.unit_number].name, count = 1}
 			player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
 			insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
 			return
@@ -401,6 +395,9 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 	if not stack or not stack.valid or not stack.valid_for_read or not (stack.name == "winch") then
 		if not global.found then
 			player.clear_gui_arrow()
+		end
+		if global.vehicle_data[event.player_index] and global.vehicle_data[event.player_index].valid and not global.found then
+			player.play_sound({path = "latch-off"})
 		end
 		global.vehicle_data[event.player_index] = nil
 	end

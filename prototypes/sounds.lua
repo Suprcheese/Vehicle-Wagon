@@ -13,5 +13,27 @@ data:extend({
 				volume = 0.9
 			},
 		},
-	}
+	},
+	{
+		type = "sound",
+		name = "latch-on",
+		variations =
+		{
+			{
+				filename = "__Vehicle Wagon__/sound/latchOn.ogg",
+				volume = 0.8
+			}
+		},
+	},
+	{
+		type = "sound",
+		name = "latch-off",
+		variations =
+		{
+			{
+				filename = "__Vehicle Wagon__/sound/latchOff.ogg",
+				volume = 0.8
+			}
+		},
+	},
 })

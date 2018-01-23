@@ -308,26 +308,3 @@ if data.raw["car"]["dumper-truck"] then
 
 	data:extend({loaded_vehicle_wagon_truck})
 end
-
-data:extend({
-	{
-		type = "simple-entity",
-		name = "winch",
-		icon = "__Vehicle Wagon__/graphics/winch-icon.png",
-		icon_size = 64,
-		flags = {"placeable-neutral", "player-creation", "placeable-off-grid", "not-on-map"},
-		collision_mask = {},
-		collision_box = {{0, 0}, {0, 0}},
-		selection_box = {{0, 0}, {0, 0}},
-		render_layer = "object",
-		max_health = 1,
-		picture =
-		{
-			filename = "__Vehicle Wagon__/graphics/winch-icon.png",
-			width = 64,
-			height = 64,
-			shift = {0, 0},
-			scale = 0.5
-		}
-	}
-})
