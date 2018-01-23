@@ -8,6 +8,7 @@ script.on_load(function() On_Load() end)
 function On_Init()
 	global.vehicle_data = global.vehicle_data or {}
 	global.wagon_data = global.wagon_data or {}
+	global.tutorials = global.tutorials or {}
 end
 
 function On_Load()
@@ -308,12 +309,16 @@ end
 
 function handleVehicle(vehicle, player_index)
 	local player = game.players[player_index]
+	global.tutorials[player_index] = global.tutorials[player_index] or 0
 	if get_driver_or_passenger(vehicle) then
 		return player.print({"passenger-error"})
 	end
 	global.vehicle_data[player_index] = vehicle
 	player.set_gui_arrow({type = "entity", entity = vehicle})
-	player.print({"vehicle-selected"})
+	if global.tutorials[player_index] < 5 then
+		global.tutorials[player_index] = global.tutorials[player_index] + 1
+		player.print({"vehicle-selected"})
+	end
 end
 
 script.on_event(defines.events.on_built_entity, function(event)
