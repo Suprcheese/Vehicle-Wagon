@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.1
+Date: 23. 1. 2018
+  Minor Features:
+    - Trains now remember their mode (auto/manual) after winching vehicles on/off them. (legendblade)
+    - Use higher-resolution icons.
+    - New latching/unlatching sounds when using the Winch.
+  Changes:
+    - Switch to new play_sound() function rather than spawning "explosion"-type entities to play sounds.
+    - Lengthened the winching-sound, and added a second variant. Vehicles also (un)load a bit more slowly.
+    - The "Vehicle selected..." tutorial message will now only appear the first few times you click a vehicle with a Winch. Once you've got the hang of things, no point in repeating it.
+    - Changed the Winch to be a capsule-type item. This adds a range visualization circle, among other things, but core functionality is of course unchanged.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 25. 12. 2017
   Changes:

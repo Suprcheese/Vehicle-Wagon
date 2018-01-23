@@ -1,7 +1,7 @@
-Vehicle Wagon 1.2.0
+Vehicle Wagon 1.2.1
 ===================
 
-Version 1.2.0 was released December 25, 2017, was tested using Factorio v0.16.7, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.2.1 was released January 23, 2018, was tested using Factorio v0.16.16, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
 Additional contributions from: Mooncat, The_Destroyer, Phasma Felis, Brant Wedel, and legendblade.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
@@ -53,8 +53,19 @@ The wagon tarp graphics for supporting unidentified vehicles provided by Brant W
 
 This mod makes use of the Factorio Standard Library by Afforess (https://github.com/Afforess/Factorio-Stdlib).
 
-The sound effect was edited from this sound: https://www.freesound.org/people/calivintage/sounds/95701
-It was uploaded by the user "calivintage" under the CC Sampling+ License.
+The sound effects were edited from these sounds:
+
+	https://www.freesound.org/people/calivintage/sounds/95701
+	Uploaded by the user "calivintage" under the CC Sampling+ License (https://creativecommons.org/licenses/sampling+/1.0).
+
+	https://freesound.org/people/Deathscyp/sounds/404022
+	Uploaded by the user "Deathscyp" under the Creative Commons 0 License.
+
+	https://freesound.org/people/j1987/sounds/106116
+	Uploaded by the user "j1987" under the Creative Commons 0 License.
+
+	https://freesound.org/people/AGC66/sounds/394303
+	Uploaded by the user "AGC66" under the CC-BY-NC license (https://creativecommons.org/licenses/by-nc/3.0/legalcode).
 
 Thanks to the forum, Github, and #factorio IRC denizens for camaraderie & advice.
 
