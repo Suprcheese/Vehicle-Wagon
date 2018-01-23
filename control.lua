@@ -223,7 +223,7 @@ function loadWagon(wagon, vehicle, player_index, name)
 	global.wagon_data[player_index].wagon = wagon
 	global.wagon_data[player_index].vehicle = vehicle
 	global.wagon_data[player_index].name = "loaded-vehicle-wagon-" .. name
-	global.wagon_data[player_index].tick = game.tick + 60
+	global.wagon_data[player_index].tick = game.tick + 120
 	script.on_event(defines.events.on_tick, process_tick)
 end
 
@@ -239,7 +239,7 @@ function unloadWagon(loaded_wagon, player)
 	global.wagon_data[player.index] = {}
 	global.wagon_data[player.index].status = "unload"
 	global.wagon_data[player.index].wagon = loaded_wagon
-	global.wagon_data[player.index].tick = game.tick + 60
+	global.wagon_data[player.index].tick = game.tick + 120
 	script.on_event(defines.events.on_tick, process_tick)
 end
 
