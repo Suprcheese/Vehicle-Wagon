@@ -189,7 +189,7 @@ function process_tick()
 					return player.print({"position-error"})
 				end
 				local vehicle = player.surface.create_entity({name = global.wagon_data[loaded_wagon.unit_number].name, position = unload_position, force = player.force})
-				script.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = player_index})
+				script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
@@ -246,9 +246,11 @@ end
 function isSpecialCase(name)
 	if name == "uplink-station" then
 		return "nope"
+	elseif string.contains(name, "heli") or string.contains(name, "rotor") then
+		return "nope"
 	elseif name == "cargo-plane" then
 		return "tarp"
-	elseif name == "nixie-tube-sprite" then
+	elseif name == "nixie-tube-sprite" then -- These should be obsolete in recent versions of Nixies
 		return "nope"
 	elseif name == "nixie-tube-small-sprite" then
 		return "nope"
@@ -374,7 +376,7 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			return
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
-		script.raise_event(defines.events.on_built_entity, {created_entity = vehicle, player_index = event.player_index})
+		script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = event.player_index})
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
 		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)

@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.2
+Date: 0. 2. 2018
+  Minor Features:
+    -
+  Changes:
+    - Reverted wagon entity icons to 32px; other icons remain high-resolution.
+    - Switched to raising the new "script_raised_built" event rather than the "on_built_entity" event.
+    - Disallowed Helicopters from being loaded on Vehicle Wagons.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: 23. 1. 2018
   Minor Features:
