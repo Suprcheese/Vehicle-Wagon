@@ -9,6 +9,9 @@ function On_Init()
 	global.vehicle_data = global.vehicle_data or {}
 	global.wagon_data = global.wagon_data or {}
 	global.tutorials = global.tutorials or {}
+	for i, player in pairs(game.players) do
+		global.tutorials[player.index] = {}
+	end
 end
 
 function On_Load()
@@ -110,9 +113,9 @@ function insertItems(entity, items, player_index, make_flying_text, extract_grid
 	end
 end
 
-function process_tick()
+function process_tick(event)
 	global.found = false
-	local current_tick = game.tick
+	local current_tick = event.tick
 	for i, player in pairs(game.players) do
 		local player_index = player.index
 		if global.wagon_data[player_index] then
@@ -183,7 +186,7 @@ function process_tick()
 				end
 				local wagon_position = loaded_wagon.position
 				local trainInManual = loaded_wagon.train.valid and loaded_wagon.train.manual_mode or false
-				local unload_position = player.surface.find_non_colliding_position(global.wagon_data[loaded_wagon.unit_number].name, wagon_position, 5, 1)
+				local unload_position = global.wagon_data[player_index].unload_position or player.surface.find_non_colliding_position(global.wagon_data[loaded_wagon.unit_number].name, wagon_position, 5, 1)
 				if not unload_position then
 					global.wagon_data[player_index] = nil
 					return player.print({"position-error"})
@@ -206,7 +209,8 @@ function process_tick()
 				wagon.health = wagon_health
 				wagon.train.manual_mode = trainInManual
 				global.wagon_data[player_index] = nil
-				player.play_sound({path = "latch-off", volume_modifier = 0.7})
+				player.surface.play_sound({path = "latch-off", position = unload_position, volume_modifier = 0.7})
+				player.surface.play_sound({path = "utility/build_small", position = unload_position, volume_modifier = 0.7})
 			end
 		end
 	end
@@ -217,7 +221,7 @@ end
 
 function loadWagon(wagon, vehicle, player_index, name)
 	local player = game.players[player_index]
-	player.play_sound({path = "winch-sound"})
+	player.surface.play_sound({path = "winch-sound", position = player.position})
 	global.wagon_data[player_index] = {}
 	global.wagon_data[player_index].status = "load"
 	global.wagon_data[player_index].wagon = wagon
@@ -227,19 +231,11 @@ function loadWagon(wagon, vehicle, player_index, name)
 	script.on_event(defines.events.on_tick, process_tick)
 end
 
-function unloadWagon(loaded_wagon, player)
-	if loaded_wagon.get_driver() then
-		return player.print({"passenger-error"})
-	end
-	if loaded_wagon.train.speed ~= 0 then
-		return player.print({"train-in-motion-error"})
-	end
-	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
-	player.play_sound({path = "winch-sound"})
-	global.wagon_data[player.index] = {}
-	global.wagon_data[player.index].status = "unload"
-	global.wagon_data[player.index].wagon = loaded_wagon
-	global.wagon_data[player.index].tick = game.tick + 120
+function unloadWagon(loaded_wagon, player_index)
+	local player = game.players[player_index]
+	player.surface.play_sound({path = "winch-sound", position = player.position})
+	global.wagon_data[player_index].status = "unload"
+	global.wagon_data[player_index].tick = game.tick + 120
 	script.on_event(defines.events.on_tick, process_tick)
 end
 
@@ -257,6 +253,26 @@ function isSpecialCase(name)
 	else
 		return false
 	end
+end
+
+function handleLoadedWagon(loaded_wagon, player_index)
+	local player = game.players[player_index]
+	global.tutorials[player_index] = global.tutorials[player_index] or {}
+	global.tutorials[player_index][2] = global.tutorials[player_index][2] or 0
+	if loaded_wagon.get_driver() then
+		return player.print({"passenger-error"})
+	end
+	if loaded_wagon.train.speed ~= 0 then
+		return player.print({"train-in-motion-error"})
+	end
+	player.play_sound({path = "latch-on"})
+	player.set_gui_arrow({type = "entity", entity = loaded_wagon})
+	if global.tutorials[player_index][2] < 5 then
+		global.tutorials[player_index][2] = global.tutorials[player_index][2] + 1
+		player.print({"select-unload-vehicle-location"})
+	end
+	global.wagon_data[player_index] = {}
+	global.wagon_data[player_index].wagon = loaded_wagon
 end
 
 function handleWagon(wagon, player_index)
@@ -310,15 +326,16 @@ end
 
 function handleVehicle(vehicle, player_index)
 	local player = game.players[player_index]
-	global.tutorials[player_index] = global.tutorials[player_index] or 0
+	global.tutorials[player_index] = global.tutorials[player_index] or {}
+	global.tutorials[player_index][1] = global.tutorials[player_index][1] or 0
 	if get_driver_or_passenger(vehicle) then
 		return player.print({"passenger-error"})
 	end
 	global.vehicle_data[player_index] = vehicle
 	player.set_gui_arrow({type = "entity", entity = vehicle})
 	player.play_sound({path = "latch-on"})
-	if global.tutorials[player_index] < 5 then
-		global.tutorials[player_index] = global.tutorials[player_index] + 1
+	if global.tutorials[player_index][1] < 5 then
+		global.tutorials[player_index][1] = global.tutorials[player_index][1] + 1
 		player.print({"vehicle-selected"})
 	end
 end
@@ -326,7 +343,8 @@ end
 script.on_event(defines.events.on_player_used_capsule, function(event)
 	local capsule = event.item
 	if capsule.name == "winch" then
-		local player = game.players[event.player_index]
+		local index = event.player_index
+		local player = game.players[index]
 		local surface = player.surface
 		local position = event.position
 		local vehicle = surface.find_entities_filtered{type = "car", position = position, force = player.force}
@@ -345,17 +363,26 @@ script.on_event(defines.events.on_player_used_capsule, function(event)
 		wagon = wagon[1]
 		loaded_wagon = loaded_wagon[1]
 		if loaded_wagon and loaded_wagon.valid then
-			unloadWagon(loaded_wagon, player)
-			player.cursor_stack.set_stack{name = "winch", count = 2}
-			return
+			handleLoadedWagon(loaded_wagon, index)
+			return player.cursor_stack.set_stack{name = "winch", count = 2}
 		end
 		if wagon and wagon.valid then
-			handleWagon(wagon, event.player_index)
-			player.cursor_stack.set_stack{name = "winch", count = 2}
-			return
+			handleWagon(wagon, index)
+			return player.cursor_stack.set_stack{name = "winch", count = 2}
 		end
 		if vehicle and vehicle.valid then
-			handleVehicle(vehicle, event.player_index)
+			handleVehicle(vehicle, index)
+			return player.cursor_stack.set_stack{name = "winch", count = 2}
+		end
+		if global.wagon_data[index] and global.wagon_data[index].wagon and not global.wagon_data[index].status then
+			local wagon = global.wagon_data[index].wagon
+			local unload_position = player.surface.find_non_colliding_position(global.wagon_data[wagon.unit_number].name, position, 5, 1)
+			if Position.distance(wagon.position, unload_position) > 9 then
+				player.print({"too-far-away"})
+				return player.cursor_stack.set_stack{name = "winch", count = 2}
+			end
+			global.wagon_data[index].unload_position = unload_position
+			unloadWagon(wagon, index)
 		end
 		player.cursor_stack.set_stack{name = "winch", count = 2}
 	end
@@ -372,8 +399,7 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			text_position.y = text_position.y + 1
 			player.insert{name = global.wagon_data[entity.unit_number].name, count = 1}
 			player.surface.create_entity({name = "flying-text", position = text_position, text = {"item-inserted", 1, game.entity_prototypes[global.wagon_data[entity.unit_number].name].localised_name}})
-			insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
-			return
+			return insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
 		script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = event.player_index})
@@ -398,7 +424,7 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 		if not global.found then
 			player.clear_gui_arrow()
 		end
-		if global.vehicle_data[event.player_index] and global.vehicle_data[event.player_index].valid and not global.found then
+		if ((global.vehicle_data[event.player_index] and global.vehicle_data[event.player_index].valid) or (global.wagon_data[event.player_index] and global.wagon_data[event.player_index].wagon)) and not global.found then
 			player.play_sound({path = "latch-off"})
 		end
 		global.vehicle_data[event.player_index] = nil

@@ -1,7 +1,7 @@
-Vehicle Wagon 1.2.1
+Vehicle Wagon 1.2.2
 ===================
 
-Version 1.2.1 was released January 23, 2018, was tested using Factorio v0.16.16, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.2.2 was released February __, 2018, was tested using Factorio v0.16.25, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
 Additional contributions from: Mooncat, The_Destroyer, Phasma Felis, Brant Wedel, and legendblade.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
@@ -27,10 +27,8 @@ You also cannot winch vehicles that have a passenger; all players must exit the 
 Known Issues/Quirks:
 --------------------
 
-When loading/unloading a Vehicle Wagon, the train it is attached to will revert to Manual mode.
-
-If a mod adds a "car"-type entity that is not meant to be an actual vehicle, such as the Nixie Tubes mod (used to; perhaps it has changed by now), it may still be able to be loaded on a Vehicle Wagon under a tarp.
-Specific exceptions have been added for Nixie Tubes (and other mods) to disallow this, but other mods may exist that this mod lacks exceptions for.
+If a mod adds a "car"-type entity that is not meant to be an actual vehicle, such as the Nixie Tubes mod (used to; it has changed by now), it may still be able to be loaded on a Vehicle Wagon under a tarp.
+Specific exceptions have been added for Nixie Tubes (and other mods) to disallow this, but certain mods may exist that this mod lacks exceptions for.
 
 ****************************************************************************************************************
 As of Factorio v0.15, it seems that the following issues are greatly ameliorated, but do still exercise caution:
