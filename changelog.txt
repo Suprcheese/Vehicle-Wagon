@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.2
-Date: 0. 2. 2018
+Date: 24. 2. 2018
   Minor Features:
     - Added the ability to specify the position where you would like vehicles to be unloaded from Vehicle Wagons.
   Changes:
