@@ -141,6 +141,7 @@ function process_tick(event)
 				local trainInManual = wagon.train.valid and wagon.train.manual_mode or false
 				wagon.destroy()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
+				player.surface.play_sound({path = "utility/build_medium", position = position, volume_modifier = 0.7})
 				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
 				-- Make sure we need the 'expensive' gsub call before bothering:
@@ -210,7 +211,7 @@ function process_tick(event)
 				wagon.train.manual_mode = trainInManual
 				global.wagon_data[player_index] = nil
 				player.surface.play_sound({path = "latch-off", position = unload_position, volume_modifier = 0.7})
-				player.surface.play_sound({path = "utility/build_small", position = unload_position, volume_modifier = 0.7})
+				player.surface.play_sound({path = "utility/build_medium", position = unload_position, volume_modifier = 0.7})
 			end
 		end
 	end
@@ -298,7 +299,7 @@ function handleWagon(wagon, player_index)
 		if Position.distance(wagon.position, vehicle.position) > 9 then
 			return player.print({"too-far-away"})
 		end
-		local special = isSpecialCase(vehicle.name)
+		local special = isSpecialCase(vehicle.name) -- Stuff like CARgo-plane can be mistaken for a "car"-type, so test for special cases
 		if special then
 			if special == "nope" then
 				global.vehicle_data[player_index] = nil
@@ -310,13 +311,13 @@ function handleWagon(wagon, player_index)
 		end
 		if not special then
 			if string.contains(vehicle.name, "tank") then
-				loadWagon(wagon, vehicle, player_index, "tank")
+				loadWagon(wagon, vehicle, player_index, "tank") -- Special graphics for "tank"-types
 			elseif string.contains(vehicle.name, "car") then
-				loadWagon(wagon, vehicle, player_index, "car")
+				loadWagon(wagon, vehicle, player_index, "car") -- Special graphics for "car"-types
 			elseif vehicle.name == "dumper-truck" then
-				loadWagon(wagon, vehicle, player_index, "truck")
+				loadWagon(wagon, vehicle, player_index, "truck") -- Special graphics for the Trucks mod by KatzSmile
 			else
-				loadWagon(wagon, vehicle, player_index, "tarp")
+				loadWagon(wagon, vehicle, player_index, "tarp") -- Fallback/generic graphics for all other cases
 			end
 		end
 	else
@@ -419,15 +420,19 @@ end)
 
 script.on_event(defines.events.on_player_cursor_stack_changed, function(event)
 	local player = game.players[event.player_index]
+	local index = event.player_index
 	local stack = player.cursor_stack
 	if not stack or not stack.valid or not stack.valid_for_read or not (stack.name == "winch") then
 		if not global.found then
 			player.clear_gui_arrow()
 		end
-		if ((global.vehicle_data[event.player_index] and global.vehicle_data[event.player_index].valid) or (global.wagon_data[event.player_index] and global.wagon_data[event.player_index].wagon)) and not global.found then
+		if ((global.vehicle_data[index] and global.vehicle_data[index].valid) or (global.wagon_data[index] and global.wagon_data[index].wagon)) and not global.found then
 			player.play_sound({path = "latch-off"})
 		end
-		global.vehicle_data[event.player_index] = nil
+		global.vehicle_data[index] = nil
+		if global.wagon_data[index] and global.wagon_data[index].wagon and not global.wagon_data[index].status then
+			global.wagon_data[index] = nil
+		end
 	end
 end)
 
