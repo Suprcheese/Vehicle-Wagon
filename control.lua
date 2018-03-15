@@ -365,27 +365,27 @@ script.on_event(defines.events.on_player_used_capsule, function(event)
 		loaded_wagon = loaded_wagon[1]
 		if loaded_wagon and loaded_wagon.valid then
 			handleLoadedWagon(loaded_wagon, index)
-			return player.cursor_stack.set_stack{name = "winch", count = 2}
+			return player.insert{name = "winch", count = 1}
 		end
 		if wagon and wagon.valid then
 			handleWagon(wagon, index)
-			return player.cursor_stack.set_stack{name = "winch", count = 2}
+			return player.insert{name = "winch", count = 1}
 		end
 		if vehicle and vehicle.valid then
 			handleVehicle(vehicle, index)
-			return player.cursor_stack.set_stack{name = "winch", count = 2}
+			return player.insert{name = "winch", count = 1}
 		end
 		if global.wagon_data[index] and global.wagon_data[index].wagon and not global.wagon_data[index].status then
 			local wagon = global.wagon_data[index].wagon
 			local unload_position = player.surface.find_non_colliding_position(global.wagon_data[wagon.unit_number].name, position, 5, 1)
 			if Position.distance(wagon.position, unload_position) > 9 then
 				player.print({"too-far-away"})
-				return player.cursor_stack.set_stack{name = "winch", count = 2}
+				return player.insert{name = "winch", count = 1}
 			end
 			global.wagon_data[index].unload_position = unload_position
 			unloadWagon(wagon, index)
 		end
-		player.cursor_stack.set_stack{name = "winch", count = 2}
+		player.insert{name = "winch", count = 1}
 	end
 end)
 
