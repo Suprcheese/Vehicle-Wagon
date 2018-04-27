@@ -247,6 +247,8 @@ function isSpecialCase(name)
 		return "nope"
 	elseif name == "cargo-plane" then
 		return "tarp"
+	elseif name == "vwtransportercargo" then
+		return "tarp"
 	elseif name == "nixie-tube-sprite" then -- These should be obsolete in recent versions of Nixies
 		return "nope"
 	elseif name == "nixie-tube-small-sprite" then
