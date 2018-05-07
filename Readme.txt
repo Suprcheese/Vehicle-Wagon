@@ -1,7 +1,7 @@
-Vehicle Wagon 1.2.3
+Vehicle Wagon 1.2.4
 ===================
 
-Version 1.2.3 was released March 16, 2018, was tested using Factorio v0.16.30, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
+Version 1.2.4 was released May 7, 2018, was tested using Factorio v0.16.41, and was authored by Supercheese, with graphics provided by the awesome YuokiTani.
 Additional contributions from: Mooncat, The_Destroyer, Phasma Felis, Brant Wedel, and legendblade.
 
 This mod allows you to load your fully-laden car or tank onto a flatbed train wagon and take it with you on your rail journeys!
@@ -16,6 +16,7 @@ This mod should play well with other tank or car mods, and has been successfully
 -SuperTank by binbinhrf
 -Trucks by KatzSmile
 -AAI Programmable Vehicles by Earendel
+-VW Transporter by steinio
 
 Modded vehicle models will revert to a standard, grey-colored version while riding on the wagon, but after unloading it should be back to normal.
 

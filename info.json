@@ -1,6 +1,6 @@
 {
 	"name": "Vehicle Wagon",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"factorio_version": "0.16",
 	"title": "Vehicle Wagon",
 	"author": "Supercheese",
@@ -16,7 +16,8 @@
 		"?aai-vehicles-hauler",
 		"?aai-vehicles-laser-tank",
 		"?aai-vehicles-miner",
-		"?aai-vehicles-warden"
+		"?aai-vehicles-warden",
+		"?vwtransporter_A16"
 	],
 	"description": "Use a winch to haul your fully-laden combat vehicle onto a flatbed train car and take it along with you on your rail journey!"
 }
