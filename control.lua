@@ -43,11 +43,21 @@ function getItemsIn(entity)
 	if entity.grid then
 		local equipment = entity.grid.equipment
 		items.grid = {}
+
 		for i = 1, #equipment do
 			items.grid[i] = {}
 			items.grid[i].name = equipment[i].name
 			items.grid[i].position = equipment[i].position
 			items.grid[i].energy = equipment[i].energy
+
+			if equipment[i].burner then
+				items.grid[i].burner = {}
+				items.grid[i].burner.inventory = equipment[i].burner.inventory.get_contents()
+				items.grid[i].burner.burnt_result_inventory = equipment[i].burner.burnt_result_inventory.get_contents()
+				items.grid[i].burner.currently_burning = equipment[i].burner.currently_burning
+				items.grid[i].burner.remaining_burning_fuel = equipment[i].burner.remaining_burning_fuel
+				items.grid[i].burner.heat = equipment[i].burner.heat
+			end
 		end
 	end
 	return items
@@ -99,6 +109,18 @@ function insertItems(entity, items, player_index, make_flying_text, extract_grid
 			for i = 1, #items.grid do
 				local equipment = entity.grid.put{name = items.grid[i].name, position = items.grid[i].position}
 				equipment.energy = items.grid[i].energy or 0
+				if items.grid[i].burner and equipment.burner then
+					for name, count in pairs(items.grid[i].burner.inventory) do
+						equipment.burner.inventory.insert{name = name, count = count}
+						-- should we be saving/loading item health, durability, and/or ammo?
+					end
+					for name, count in pairs(items.grid[i].burner.burnt_result_inventory) do
+						equipment.burner.burnt_result_inventory.insert{name = name, count = count}
+					end
+					equipment.burner.currently_burning = items.grid[i].burner.currently_burning
+					equipment.burner.remaining_burning_fuel = items.grid[i].burner.remaining_burning_fuel
+					equipment.burner.heat = items.grid[i].burner.heat
+				end
 				script.raise_event(defines.events.on_player_placed_equipment, {player_index = player_index, equipment = equipment, grid = entity.grid})
 			end
 		end
