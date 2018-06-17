@@ -164,6 +164,9 @@ function process_tick(event)
 				wagon.destroy()
 				local loaded_wagon = player.surface.create_entity({name = global.wagon_data[player_index].name, position = position, force = player.force})
 				player.surface.play_sound({path = "utility/build_medium", position = position, volume_modifier = 0.7})
+				if not loaded_wagon or not loaded_wagon.valid then
+					return player.print({"generic-error"})
+				end
 				loaded_wagon.health = wagon_health
 				global.wagon_data[loaded_wagon.unit_number] = {}
 				-- Make sure we need the 'expensive' gsub call before bothering:
@@ -215,6 +218,9 @@ function process_tick(event)
 					return player.print({"position-error"})
 				end
 				local vehicle = player.surface.create_entity({name = global.wagon_data[loaded_wagon.unit_number].name, position = unload_position, force = player.force})
+				if not vehicle then
+					return player.print({"generic-error"})
+				end
 				script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
@@ -229,11 +235,14 @@ function process_tick(event)
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
-				wagon.health = wagon_health
-				wagon.train.manual_mode = trainInManual
 				global.wagon_data[player_index] = nil
 				player.surface.play_sound({path = "latch-off", position = unload_position, volume_modifier = 0.7})
 				player.surface.play_sound({path = "utility/build_medium", position = unload_position, volume_modifier = 0.7})
+				if not wagon or not wagon.valid then
+					return player.print({"generic-error"})
+				end
+				wagon.health = wagon_health
+				wagon.train.manual_mode = trainInManual
 			end
 		end
 	end
