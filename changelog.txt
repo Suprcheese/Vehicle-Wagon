@@ -1,6 +1,13 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.5
+Date: 18. 6. 2018
+  Bugfixes:
+    - Fixed crash with winching vehicles on wagons which are on diagonal end rails.
+  Changes:
+    - Save/restore burner equipment data in vehicle grids when traveling on Vehicle Wagons. (narc)
+---------------------------------------------------------------------------------------------------
 Version: 1.2.4
-Date: 5. 7. 2018
+Date: 7. 5. 2018
   Changes:
     - Add compatibility for the VW Transporter mod.
 ---------------------------------------------------------------------------------------------------
