@@ -476,3 +476,63 @@ script.on_event(defines.events.on_player_driving_changed_state, function(event)
 		player.driving = false
 	end
 end)
+
+
+------------------------- CURSOR AND BLUEPRINT HANDLING FOR 0.17.x ---------------------------------------
+
+-- Force Pipette Tool to select empty vehicle wagons when used on loaded wagons
+script.on_event(defines.events.on_player_pipette, function(event)
+	local item = event.item
+	if item and item.valid then
+		if item.name == "loaded-vehicle-wagon-tank" or item.name == "loaded-vehicle-wagon-car" or item.name == "loaded-vehicle-wagon-truck" or item.name == "loaded-vehicle-wagon-tarp" then
+			local player = game.players[event.player_index]
+			local cursor = player.cursor_stack
+			local inventory = player.get_main_inventory()
+			if cursor.valid_for_read == true and event.used_cheat_mode == false then
+				-- Somehow got loaded items from inventory, convert them to unloaded (vehicle is probably invalid anyways, right?)
+				cursor.set_stack({name="vehicle-wagon",count=cursor.count})
+			else
+				-- Check if the player could have gotten the right thing from inventory/cheat, otherwise clear the cursor
+				local newItemStack = inventory.find_item_stack("vehicle-wagon")
+				cursor.set_stack(newItemStack)  -- if nil, clears cursor
+				if not cursor.valid_for_read then
+					-- no stack available in inventory, check for cheat mode
+					if player.cheat_mode==true then
+						cursor.set_stack({name="vehicle-wagon", count=game.item_prototypes["vehicle-wagon"].stack_size})
+					end
+				else
+					-- remove the stack that was moved to cursor from inventory
+					inventory.remove(newItemStack)
+				end
+			end
+		end
+	end
+end)
+
+-- Finds the blueprint a player created and changes all loaded wagons to unloaded
+local function purgeBlueprint(bp)
+	-- Get Entity table from blueprint
+	local entities = bp.get_blueprint_entities()
+	-- Find any downgradable items and downgrade them
+	if entities and next(entities) then
+		for _,e in pairs(entities) do
+			if e.name == "loaded-vehicle-wagon-tank" or e.name == "loaded-vehicle-wagon-car" or e.name == "loaded-vehicle-wagon-truck" or e.name == "loaded-vehicle-wagon-tarp" then
+				e.name = "vehicle-wagon"
+			end
+		end
+		-- Write tables back to the blueprint
+		bp.set_blueprint_entities(entities)
+	end
+end
+
+-- Force Blueprints to only store empty vehicle wagons
+script.on_event({defines.events.on_player_setup_blueprint,defines.events.on_player_configured_blueprint}, function(event)
+	-- Get Blueprint from player (LuaItemStack object). Could be in either of two places.
+	local bp1 = game.get_player(event.player_index).blueprint_to_setup
+	local bp2 = game.get_player(event.player_index).cursor_stack
+	if bp1 and bp1.valid_for_read==true then
+		purgeBlueprint(bp1)
+	elseif bp2 and bp2.valid_for_read==true then
+		purgeBlueprint(bp2)
+	end
+end)
