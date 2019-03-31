@@ -221,7 +221,7 @@ function process_tick(event)
 				if not vehicle then
 					return player.print({"generic-error"})
 				end
-				script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = player_index})
+				script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
@@ -436,7 +436,7 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			return insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
-		script.raise_event(defines.events.script_raised_built, {created_entity = vehicle, player_index = event.player_index})
+		script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = event.player_index})
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
 		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)
