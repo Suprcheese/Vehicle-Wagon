@@ -221,7 +221,6 @@ function process_tick(event)
 				if not vehicle then
 					return player.print({"generic-error"})
 				end
-				script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = player_index})
 				vehicle.health = global.wagon_data[loaded_wagon.unit_number].health
 				setFilters(vehicle, global.wagon_data[loaded_wagon.unit_number].filters)
 				insertItems(vehicle, global.wagon_data[loaded_wagon.unit_number].items, player_index)
@@ -232,6 +231,7 @@ function process_tick(event)
 					vehicle.burner.heat = global.wagon_data[loaded_wagon.unit_number].burner.heat
 					vehicle.burner.remaining_burning_fuel = global.wagon_data[loaded_wagon.unit_number].burner.remaining_burning_fuel
 				end
+				script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = player_index})
 				global.wagon_data[loaded_wagon.unit_number] = nil
 				loaded_wagon.destroy()
 				local wagon = player.surface.create_entity({name = "vehicle-wagon", position = wagon_position, force = player.force})
@@ -436,7 +436,6 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			return insertItems(player, global.wagon_data[entity.unit_number].items, event.player_index, true, true)
 		end
 		local vehicle = player.surface.create_entity({name = global.wagon_data[entity.unit_number].name, position = unload_position, force = player.force})
-		script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = event.player_index})
 		vehicle.health = global.wagon_data[entity.unit_number].health
 		setFilters(vehicle, global.wagon_data[entity.unit_number].filters)
 		insertItems(vehicle, global.wagon_data[entity.unit_number].items, event.player_index)
@@ -447,6 +446,7 @@ script.on_event(defines.events.on_pre_player_mined_item, function(event)
 			vehicle.burner.heat = global.wagon_data[entity.unit_number].burner.heat
 			vehicle.burner.remaining_burning_fuel = global.wagon_data[entity.unit_number].burner.remaining_burning_fuel
 		end
+		script.raise_event(defines.events.script_raised_built, {entity = vehicle, player_index = event.player_index})
 		global.wagon_data[entity.unit_number] = nil
 	end
 end)
