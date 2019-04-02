@@ -532,7 +532,7 @@ script.on_event({defines.events.on_player_setup_blueprint,defines.events.on_play
 	local bp2 = game.get_player(event.player_index).cursor_stack
 	if bp1 and bp1.valid_for_read==true then
 		purgeBlueprint(bp1)
-	elseif bp2 and bp2.valid_for_read==true then
+	elseif bp2 and bp2.valid_for_read==true and bp2.is_blueprint==true then
 		purgeBlueprint(bp2)
 	end
 end)
