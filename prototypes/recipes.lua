@@ -21,6 +21,7 @@ data:extend({
 			{"iron-gear-wheel", 5},
 			{"iron-plate", 5},
 		},
+		result_count = 2,
 		result = "winch"
 	}
 })
